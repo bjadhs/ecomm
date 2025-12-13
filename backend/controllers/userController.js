@@ -1,16 +1,6 @@
-import jwt from 'jsonwebtoken';
-import User from '../models/User.js';
+import User from '../models/userModel.js';
+import generateToken from '../config/generateToken.js';
 
-// Generate JWT token
-const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: '30d',
-  });
-};
-
-// @desc    Register a new user
-// @route   POST /api/users/register
-// @access  Public
 export const registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -43,9 +33,6 @@ export const registerUser = async (req, res) => {
   }
 };
 
-// @desc    Authenticate user
-// @route   POST /api/users/login
-// @access  Public
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -68,9 +55,6 @@ export const loginUser = async (req, res) => {
   }
 };
 
-// @desc    Get user profile
-// @route   GET /api/users/profile
-// @access  Private
 export const getUserProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('-password');
@@ -88,9 +72,6 @@ export const getUserProfile = async (req, res) => {
   }
 };
 
-// @desc    Get all users
-// @route   GET /api/users
-// @access  Private/Admin
 export const getUsers = async (req, res) => {
   try {
     const users = await User.find({}).select('-password');
@@ -99,3 +80,21 @@ export const getUsers = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+//Addressess
+export const addAddress = async (req, res) => {
+}
+export const getAddress = async (req, res) => {
+}
+export const updateAddress = async (req, res) => {
+}
+export const deleteAddress = async (req, res) => {
+}
+
+//Wishlist
+export const addToWishlist = async (req, res) => {
+}
+export const getWishlist = async (req, res) => {
+}
+export const deleteFromWishlist = async (req, res) => {
+}
