@@ -1,6 +1,8 @@
 import express from 'express';
+import path from 'path';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import { ENV } from './config/env.js';
 import connectDB from './config/database.js';
 import userRoute from './routes/userRoute.js';
 import { errorHandler } from './middleware/errorMiddleware.js';
@@ -8,7 +10,7 @@ import { errorHandler } from './middleware/errorMiddleware.js';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const __dirname = path.resolve();
 
 // Connect to MongoDB
 connectDB();
@@ -29,6 +31,13 @@ app.get('/api/health', (req, res) => {
 // Error handling middleware
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+if (ENV.NODE_ENV == 'production') {
+  app.use(express.static(path.join(__dirname, '../admin/dist')))
+  app.get('/{*any}', (req, res) => {
+    res.sendFile(path.join(__dirname, '../admin', '/dist', '/index.html'))
+  })
+}
+
+app.listen(ENV.PORT, () => {
+  console.log(`Server is running on port ${ENV.PORT}`);
 });
