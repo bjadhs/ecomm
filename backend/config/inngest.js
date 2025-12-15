@@ -1,12 +1,37 @@
-import { ENV } from './env.js';
-import { v2 as cloudinary } from 'cloudinary';
+import { Inngest } from 'inngest';
+import User from '../models/userModel.js';
+import connectDB from './database.js';
 
-const CLOUDINARY_URL = `cloudinary://${ENV.CLOUDINARY_API_KEY}:${ENV.CLOUDINARY_SECRET_KEY}@${ENV.CLOUDINARY_CLOUD_NAME}`;
 
-cloudinary.config({
-    cloud_name: ENV.CLOUDINARY_CLOUD_NAME,
-    api_key: ENV.CLOUDINARY_API_KEY,
-    api_secret: ENV.CLOUDINARY_SECRET_KEY
-})
+export const inngest = new Inngest({ id: 'ecom' })
 
-export default cloudinary;
+export const syncUser = inngest.createFunction(
+    { id: 'sync-user' },
+    { event: 'clerk/user.created' },
+    async ({ event }) => {
+        await connectDB();
+        console.log(event.data)
+        const { id, email_addresses, first_name, last_name, image_url } = event.data;
+
+        const newUser = {
+            clerkId: id,
+            email: email_addresses[0].email_address,
+            name: `${first_name} ${last_name}` || "User",
+            imageUrl: image_url,
+            addresses: [],
+            wishList: []
+        }
+        await User.create(newUser);
+    }
+)
+
+export const deleteUser = inngest.createFunction(
+    { id: 'delete-user' },
+    { event: 'clerk/user.deleted' },
+    async ({ event }) => {
+        await connectDB();
+        const { id } = event.data;
+        await User.deleteOne({ clerkId: id });
+    }
+)
+export const functions = [syncUser, deleteUser]
