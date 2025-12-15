@@ -11,6 +11,7 @@
   "dependencies": {
     "@clerk/express": "^1.7.57",
     "bcryptjs": "^2.4.3",
+    "cloudinary": "^2.8.0",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
@@ -24,5 +25,8 @@
   },
   "keywords": [],
   "author": "Bijaya A",
-  "license": "MIT"
+  "license": "MIT",
+  "overrides": {
+    "whatwg-url": "^14.0.0"
+  }
 }
