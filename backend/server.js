@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import { ENV } from './config/env.js';
 import connectDB from './config/database.js';
 import userRoute from './routes/userRoute.js';
+import adminRoute from './routes/adminRoute.js';
 import { errorHandler } from './middleware/errorMiddleware.js';
 import { clerkMiddleware } from '@clerk/express';
 import { serve } from 'inngest/express';
@@ -24,6 +25,7 @@ app.use(clerkMiddleware());
 
 // Routes
 app.use('/api/users', userRoute);
+app.use('/api/admin', adminRoute);
 
 // Health check route
 app.get('/api/health', (req, res) => {
