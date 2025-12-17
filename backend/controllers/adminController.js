@@ -77,8 +77,8 @@ export const deleteProduct = async (req, res) => {
 
 export const getAllOrders = async (req, res) => {
     try {
-        const order = await Order.findAll().populate("user", ["name email"]).populate("items.product").sort({ createdAt: -1 });
-        res.status(200).json(order);
+        const orders = await Order.find().populate("user", ["name email"]).populate("items.product").sort({ createdAt: -1 });
+        res.status(200).json(orders);
     } catch (error) {
         console.log("Error getting orders", error);
         res.status(500).json({ message: error.message });
@@ -94,7 +94,7 @@ export const updateOrderStatus = async (req, res) => {
         if (!["pending", "shipped", "delivered"].includes(status)) {
             return res.status(400).json({ message: "Invalid status" })
         }
-        const order = Order.findById(id);
+        const order = await Order.findById(id);
         if (!order) {
             return res.status(404).json({ message: "Order not found" })
         }
@@ -116,7 +116,7 @@ export const updateOrderStatus = async (req, res) => {
 
 export const getAllCustomers = async (req, res) => {
     try {
-        const customers = await User.findAll().sort({ createdAt: -1 });
+        const customers = await User.find().sort({ createdAt: -1 });
         res.status(200).json({ customers })
     } catch (error) {
         console.log(`Error fetching customer data: ${error}`)
