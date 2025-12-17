@@ -1,5 +1,5 @@
 import { Inngest } from 'inngest';
-import User from '../models/userModel.js';
+import { User } from '../models/userModel.js';
 import connectDB from './database.js';
 
 
@@ -32,6 +32,22 @@ export const deleteUser = inngest.createFunction(
         await connectDB();
         const { id } = event.data;
         await User.deleteOne({ clerkId: id });
+    }
+)
+
+export const updateUser = inngest.createFunction(
+    { id: 'update-user' },
+    { event: 'clerk/user.updated' },
+    async ({ event }) => {
+        await connectDB();
+        const { id, email_addresses, first_name, last_name, image_url } = event.data;
+        await User.updateOne({ clerkId: id }, {
+            $set: {
+                email: email_addresses[0].email_address,
+                name: `${first_name} ${last_name}` || "User",
+                imageUrl: image_url,
+            }
+        })
     }
 )
 export const functions = [syncUser, deleteUser]

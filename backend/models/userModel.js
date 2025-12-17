@@ -1,40 +1,5 @@
 import mongoose from 'mongoose';
-import bcrypt from 'bcryptjs';
 
-const addressSchema = new mongoose.Schema({
-  label: {
-    type: String,
-    required: true
-  },
-  fullName: {
-    type: String,
-    required: true
-  },
-  streetAddress: {
-    type: String,
-    required: true
-  },
-  city: {
-    type: String,
-    required: true
-  },
-  state: {
-    type: String,
-    required: true
-  },
-  zipcode: {
-    type: String,
-    required: true
-  },
-  phone: {
-    type: String,
-    required: true
-  },
-  isDefault: {
-    type: Boolean,
-    default: false
-  }
-}, { timestamps: true });
 
 const userSchema = new mongoose.Schema({
   clerkId: {
@@ -53,13 +18,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: ""
   },
-  addresses: [addressSchema],
+  addresses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Address' }],
   wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }]
 }, {
   timestamps: true
 });
 
 
-const User = mongoose.model('User', userSchema);
-
-export default User;
+export const User = mongoose.model('User', userSchema);
