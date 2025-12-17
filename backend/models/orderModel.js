@@ -22,7 +22,6 @@ const OrderItemSchema = new mongoose.Schema({
     },
     image: {
         type: String,
-        required: true
     }
 })
 
@@ -53,7 +52,7 @@ const OrderSchema = new mongoose.Schema({
     status: {
         type: String,
         required: true,
-        enum: ["pending", "shipped", "delivered", "cancelled"],
+        enum: ["pending", "shipped", "delivered"],
         default: "pending"
     },
     deliveredAt: {
