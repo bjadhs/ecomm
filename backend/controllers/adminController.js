@@ -1,4 +1,3 @@
-import { User } from '../models/userModel.js';
 import { Product } from '../models/productModel.js';
 
 export const createProduct = async (req, res) => {
@@ -11,7 +10,7 @@ export const createProduct = async (req, res) => {
         const product = await Product.create({
             name,
             description,
-            price: parseInt(price),
+            price: parseFloat(price),
             stock: parseInt(stock),
             category,
         })

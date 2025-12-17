@@ -50,4 +50,4 @@ export const updateUser = inngest.createFunction(
         })
     }
 )
-export const functions = [syncUser, deleteUser]
+export const functions = [syncUser, deleteUser, updateUser]
