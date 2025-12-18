@@ -1,6 +1,8 @@
 import { User } from '../models/userModel.js';
 import { Order } from '../models/orderModel.js';
 import { Product } from '../models/productModel.js';
+import multer from "multer";
+import cloudinary from '../config/cloudinary.js';
 
 export const createProduct = async (req, res) => {
     try {
@@ -9,13 +11,32 @@ export const createProduct = async (req, res) => {
             return res.status(400).json({ message: "All fields are required" })
         }
 
+        if (!req.files && !req.files.length == 0) {
+            return res.status(400).json({ message: "Please upload at least one image" })
+        }
+        if (req.files.length > 3) {
+            return res.status(400).json({ message: "Please upload at most three images" })
+        }
+
+        // Upload images to cloudinary
+        const uploadPromise = req.files.map((file) => {
+            return cloudinary.uploader.upload(file.path, { folder: "products" })
+        })
+        const uploadResult = await Promise.all(uploadPromise);
+        const imageUrl = uploadResult.map((image) => {
+            return image.secureUrl;
+        })
+
+
         const product = await Product.create({
             name,
             description,
             price: parseFloat(price),
             stock: parseInt(stock),
             category,
+            images: imageUrl
         })
+
         res.status(201).json(product);
         console.log("Product created successfully", product);
     } catch (error) {
@@ -49,6 +70,23 @@ export const updateProduct = async (req, res) => {
         if (stock) product.stock = parseInt(stock);
         if (category) product.category = category;
 
+        // Update images if new image updated
+        if (req.files && req.files.length > 0) {
+
+            if (req.files.length > 3) {
+                return res.status(400).json({ message: "Please upload at most three images" })
+            }
+
+            const uploadPromise = req.files.map((file) => {
+                return cloudinary.uploader.upload(file.path, { folder: "products" })
+            })
+            const uploadResult = await Promise.all(uploadPromise);
+            const imageUrl = uploadResult.map((image) => {
+                return image.secureUrl;
+            })
+            product.images = imageUrl;
+        }
+
         await product.save();
         res.status(200).json(product);
     } catch (error) {
@@ -66,6 +104,11 @@ export const deleteProduct = async (req, res) => {
         if (!product) {
             return res.status(404).json({ message: "Product not found" })
         }
+        // Delete images from cloudinary
+        const deletePromises = product.images.map((image => {
+            return cloudinary.uploader.destroy(image);
+        }))
+        await Promise.all(deletePromises);
 
         res.status(200).json(product);
     } catch (error) {

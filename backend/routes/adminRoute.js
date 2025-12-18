@@ -11,7 +11,7 @@ router.get('/products', getAllProducts);
 router.put('/products/:id', updateProduct);
 router.delete('/products/:id', deleteProduct);
 router.get('/orders', getAllOrders);
-router.patch('/order/:id', updateOrderStatus);
+router.patch('/order/:orderId/status', updateOrderStatus);
 
 export default router;
 
