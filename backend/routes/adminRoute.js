@@ -5,9 +5,10 @@ import { upload } from '../middleware/multerMiddleware.js';
 
 const router = express.Router();
 
-router.use(protect, adminOnly)
+router.use(protect);
+router.use(adminOnly);
 
-router.post('/products', upload.array('images', 3), createProduct);
+router.post("/products", upload.array('images', 3), createProduct);
 router.get('/products', getAllProducts);
 router.put('/products/:id', upload.array('images', 3), updateProduct);
 router.delete('/products/:id', deleteProduct);

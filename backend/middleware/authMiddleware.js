@@ -1,15 +1,17 @@
 import jwt from 'jsonwebtoken';
-import { requireAuth } from '@clerk/express';
+import { requireAuth, clerkClient, getAuth } from '@clerk/express';
 import { ENV } from '../config/env.js';
 import { User } from '../models/userModel.js';
 
 export const protect = [requireAuth(), async (req, res, next) => {
     try {
-        const clerkId = req.auth.userId;
-        if (!clerkId) {
-            return res.status(401).json({ message: "Invalid User" })
-        }
-        const user = await User.findOne({ clerkId })
+        const { userId } = getAuth(req);
+        console.log(`User ID: ${userId}`);
+
+        const user = await clerkClient.users.getUser(userId);
+
+        console.log(`User: ${user}`);
+
         if (!user) {
             return res.status(401).json({ message: "User not found" })
         }
@@ -19,7 +21,10 @@ export const protect = [requireAuth(), async (req, res, next) => {
         console.log(error);
         return res.status(500).json({ message: "Internal Server Error" })
     }
-}]
+
+}
+]
+
 
 export const adminOnly = (req, res, next) => {
     if (req.user.email !== ENV.ADMIN_EMAIL) {
@@ -27,3 +32,5 @@ export const adminOnly = (req, res, next) => {
     }
     next()
 }
+
+

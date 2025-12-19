@@ -18,7 +18,7 @@ const __dirname = path.resolve();
 
 
 // Middleware
-app.use(cors({ origin: ENV.FRONTEND_URL }));
+app.use(cors({ origin: ENV.CLIENT_URL }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(clerkMiddleware());

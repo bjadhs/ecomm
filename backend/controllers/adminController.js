@@ -6,8 +6,9 @@ import cloudinary from '../config/cloudinary.js';
 export const createProduct = async (req, res) => {
     try {
         const { name, description, price, stock, category } = req.body;
+        console.log(req.user.email);
         if (!name || !description || !price || !stock || !category) {
-            return res.status(400).json({ message: "All fields are required" })
+            return res.status(400).json({ message: "All fields are required.." })
         }
 
         if (!Array.isArray(req.files) || !req.files.length === 0) {
