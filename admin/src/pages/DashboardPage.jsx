@@ -1,11 +1,17 @@
-import React from 'react'
+import { Button } from "react-daisyui";
 
 const DashboardPage = () => {
     return (
-        <div className="flex justify-center items-center h-screen bg-green-200">
-            <div className="bg-white p-6 rounded-lg shadow-md">
-                <h1 className="text-2xl font-bold">Dashboard</h1>
+        <div className="space-y-8">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
+                    <p className="text-sm text-slate-500 mt-1">Welcome back, here's what's happening today.</p>
+                </div>
+
             </div>
+
+
         </div>
     )
 }
