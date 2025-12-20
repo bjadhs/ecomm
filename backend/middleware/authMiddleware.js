@@ -27,7 +27,11 @@ export const protect = [requireAuth(), async (req, res, next) => {
 
 
 export const adminOnly = (req, res, next) => {
-    if (req.user.email !== ENV.ADMIN_EMAIL) {
+    const adminEmail = req.user.emailAddresses?.find(
+        (email) => email.id === req.user.primaryEmailAddressId
+    )?.emailAddress;
+
+    if (adminEmail !== ENV.ADMIN_EMAIL) {
         return res.status(403).json({ message: "Forbidden not Admin" })
     }
     next()

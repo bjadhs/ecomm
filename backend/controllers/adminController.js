@@ -6,7 +6,6 @@ import cloudinary from '../config/cloudinary.js';
 export const createProduct = async (req, res) => {
     try {
         const { name, description, price, stock, category } = req.body;
-        console.log(req.user.email);
         if (!name || !description || !price || !stock || !category) {
             return res.status(400).json({ message: "All fields are required.." })
         }
@@ -130,6 +129,7 @@ export const deleteProduct = async (req, res) => {
 
 }
 
+
 export const getAllOrders = async (req, res) => {
     try {
         const orders = await Order.find().populate("user", ["name email"]).populate("items.product").sort({ createdAt: -1 });
@@ -171,8 +171,8 @@ export const updateOrderStatus = async (req, res) => {
 
 export const getAllCustomers = async (req, res) => {
     try {
-        const customers = await User.find().sort({ createdAt: -1 });
-        res.status(200).json({ customers })
+        const customers = await User.find({}).sort({ createdAt: -1 });
+        res.status(200).json(customers)
     } catch (error) {
         console.log(`Error fetching customer data: ${error}`)
         res.status(500).json({ message: error.message });

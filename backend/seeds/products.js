@@ -146,7 +146,7 @@ const products = [
     },
 ];
 
-const seedDatabase = async () => {
+const seedProducts = async () => {
     try {
         await mongoose.connect(ENV.MONGODB_URI);
         await Product.deleteMany({});
@@ -164,7 +164,7 @@ const seedDatabase = async () => {
     }
 }
 
-seedDatabase();
+seedProducts();
 
 
 

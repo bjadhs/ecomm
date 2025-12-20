@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { productApi } from '../lib/api';
 import ProductCard from '../components/ProductCard';
-import { Plus, LayoutGrid, PackageSearch } from 'lucide-react';
+import { Plus } from 'lucide-react';
 
 const ProductPage = () => {
     const { data: products = [], isLoading, error } = useQuery({
