@@ -1,4 +1,3 @@
-import { Button } from "react-daisyui";
 
 const DashboardPage = () => {
     return (

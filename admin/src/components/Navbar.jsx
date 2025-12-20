@@ -1,10 +1,16 @@
 import { useState } from "react";
 import { User, Menu as MenuIcon, LogOut } from "lucide-react";
-import { SignOutButton, useUser } from "@clerk/clerk-react";
+import { SignOutButton, useUser, useAuth } from "@clerk/clerk-react";
 
 const Navbar = ({ onMenuClick }) => {
     const [showProfileMenu, setShowProfileMenu] = useState(false);
     const { user } = useUser();
+    const { getToken } = useAuth();
+
+    const handleToken = async () => {
+        const token = await getToken({ skipCache: true });
+        console.log(token);
+    }
 
     return (
         <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 lg:px-8">
@@ -16,6 +22,7 @@ const Navbar = ({ onMenuClick }) => {
                     <MenuIcon size={24} />
                 </button>
                 <h1>Welcome, {user?.firstName}</h1>
+                <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={handleToken}>Get Token</button>
 
             </div>
 
