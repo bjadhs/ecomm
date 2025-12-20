@@ -1,4 +1,4 @@
-import LoginPage from './loginpage';
+import LoginPage from './LoginPage';
 import DashboardPage from './DashboardPage';
 import CustomerPage from './CustomerPage';
 import OrderPage from './OrderPage';
