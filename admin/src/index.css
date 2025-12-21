@@ -1,16 +1,54 @@
 @import "tailwindcss";
 
+@layer base {
+    :root {
+        --bg-main: #f8fafc;
+        --bg-card: #ffffff;
+        --bg-hover: #b4d0eb;
+
+        --text-main: #0f172a;
+        --text-muted: #37404d;
+        /* slate-500 - Darker for visibility on light bg */
+        --text-color: #475569;
+        /* slate-600 - Added as requested for icons/secondary text */
+
+        --border-color: #e2e8f0;
+
+        --color-primary: #1149a3;
+    }
+
+    .dark {
+        --bg-main: #0f172a;
+        --bg-card: #1e293b;
+        --bg-hover: #334155;
+
+        --text-main: #f8fafc;
+        --text-muted: #94a3b8;
+        /* slate-400 - Lighter for visibility on dark bg */
+        --text-color: #cbd5e1;
+        /* slate-300 */
+
+        --border-color: #334155;
+
+        --color-primary: #79b3f9;
+    }
+}
+
 @layer components {
+    body {
+        @apply bg-[var(--bg-main)] text-[var(--text-main)] transition-colors duration-300;
+    }
+
     .btn-icon {
-        @apply p-2 text-slate-500 hover:bg-slate-50 rounded-full transition-colors relative;
+        @apply p-2 text-[var(--text-muted)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] rounded-full transition-colors relative;
     }
 
     .dropdown-item {
-        @apply block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors;
+        @apply block px-4 py-2 text-sm text-[var(--text-muted)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] transition-colors;
     }
 
     .dropdown-item-danger {
-        @apply block px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors;
+        @apply block px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors;
     }
 
     .sidebar-link {
@@ -18,15 +56,19 @@
     }
 
     .sidebar-link-active {
-        @apply bg-blue-50 text-blue-600;
+        @apply bg-[var(--color-primary)] text-white shadow-md shadow-blue-500/20 dark:shadow-none;
     }
 
     .sidebar-link-inactive {
-        @apply text-slate-600 hover:bg-slate-50 hover:text-slate-900;
+        @apply text-[var(--text-muted)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-muted)] hover:shadow-sm dark:hover:bg-[var(--bg-hover)] dark:hover:text-white dark:hover:shadow-none;
+    }
+
+    .table-head {
+        @apply p-4 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider;
     }
 
     .card-minimal {
-        @apply bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden;
+        @apply bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl shadow-sm overflow-hidden;
     }
 
     .stat-badge {

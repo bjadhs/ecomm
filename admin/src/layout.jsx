@@ -9,18 +9,18 @@ const DashboardLayout = () => {
     const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
     return (
-        <div className="flex min-h-screen bg-slate-50 font-sans text-slate-900">
+        <div className="flex min-h-screen bg-[var(--bg-main)] font-sans text-[var(--text-main)] transition-colors duration-300">
             {/* Sidebar overlay for mobile */}
             {isSidebarOpen && (
                 <div
-                    className="fixed inset-0 z-40 bg-slate-900/50 lg:hidden transition-opacity"
+                    className="fixed inset-0 z-40 bg-black/50 lg:hidden transition-opacity"
                     onClick={() => setIsSidebarOpen(false)}
                 />
             )}
 
             {/* Sidebar */}
             <aside className={`
-                fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200 transform transition-transform duration-200 ease-in-out lg:relative lg:translate-x-0
+                fixed inset-y-0 left-0 z-50 w-64 bg-[var(--bg-card)] border-r border-[var(--border-color)] transform transition-transform duration-200 ease-in-out lg:relative lg:translate-x-0
                 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
             `}>
                 <Sidebar closeSidebar={() => setIsSidebarOpen(false)} />

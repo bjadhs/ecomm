@@ -10,62 +10,62 @@ const CustomerPage = () => {
 
     if (isLoading) return (
         <div className="flex items-center justify-center p-10">
-            <div className="text-xl font-medium text-gray-500">Loading customers...</div>
+            <div className="text-xl font-medium text-[var(--text-muted)]">Loading customers...</div>
         </div>
     )
 
     if (error) return (
-        <div className="p-4 bg-red-50 text-red-700 rounded-lg">
+        <div className="p-4 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 rounded-lg">
             Error loading customers: {error.message}
         </div>
     )
 
     return (
         <div className="p-6">
-            <h1 className="text-2xl font-bold mb-6 text-gray-800">Customers</h1>
+            <h1 className="text-2xl font-bold mb-6 text-[var(--text-main)]">Customers</h1>
 
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+            <div className="bg-[var(--bg-card)] rounded-lg shadow-sm border border-[var(--border-color)] overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
-                        <thead className="bg-gray-50 border-b border-gray-200">
+                        <thead className="bg-[var(--bg-hover)] border-b border-[var(--border-color)]">
                             <tr>
-                                <th className="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Name</th>
-                                <th className="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Email</th>
-                                <th className="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Clerk ID</th>
-                                <th className="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Joined Date</th>
+                                <th className="table-head">Name</th>
+                                <th className="table-head">Email</th>
+                                <th className="table-head">Clerk ID</th>
+                                <th className="table-head">Joined Date</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-100">
+                        <tbody className="divide-y divide-[var(--border-color)]">
                             {customers.length > 0 ? (
                                 customers.map((customer) => (
-                                    <tr key={customer._id} className="hover:bg-gray-50 transition-colors">
+                                    <tr key={customer._id} className="hover:bg-[var(--bg-hover)] transition-colors">
                                         <td className="p-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+                                                <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400">
                                                     <User size={16} />
                                                 </div>
-                                                <span className="font-medium text-gray-900">{customer.name || "N/A"}</span>
+                                                <span className="font-medium text-[var(--text-main)]">{customer.name || "N/A"}</span>
                                             </div>
                                         </td>
                                         <td className="p-4">
-                                            <div className="flex items-center gap-2 text-gray-600">
+                                            <div className="flex items-center gap-2 text-[var(--text-muted)]">
                                                 <Mail size={14} />
                                                 <span>{customer.email}</span>
                                             </div>
                                         </td>
                                         <td className="p-4 whitespace-nowrap">
-                                            <span className="font-mono text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                                            <span className="font-mono text-xs text-[var(--text-muted)] bg-[var(--bg-hover)] px-2 py-1 rounded">
                                                 {customer.clerkId}
                                             </span>
                                         </td>
-                                        <td className="p-4 whitespace-nowrap text-sm text-gray-500">
+                                        <td className="p-4 whitespace-nowrap text-sm text-[var(--text-muted)]">
                                             {new Date(customer.createdAt).toLocaleDateString()}
                                         </td>
                                     </tr>
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan={4} className="p-8 text-center text-gray-500">
+                                    <td colSpan={4} className="p-8 text-center text-[var(--text-muted)]">
                                         No customers found.
                                     </td>
                                 </tr>

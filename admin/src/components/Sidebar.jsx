@@ -11,9 +11,9 @@ const Sidebar = ({ closeSidebar }) => {
     ];
 
     return (
-        <div className="flex flex-col h-full">
-            <div className="h-16 flex items-center justify-between px-6 border-b border-slate-100 lg:border-none">
-                <span className="text-xl font-bold text-blue-600 tracking-tight uppercase">Ecom Admin</span>
+        <div className="flex flex-col h-full bg-[var(--bg-card)]">
+            <div className="h-16 flex items-center justify-between px-6 border-b border-[var(--border-color)] lg:border-none">
+                <span className="text-xl font-bold text-[var(--color-primary)] tracking-tight uppercase">Ecom Admin</span>
                 <button
                     onClick={closeSidebar}
                     className="btn-icon lg:hidden"

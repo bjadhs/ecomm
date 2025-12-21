@@ -10,17 +10,17 @@ const ProductPage = () => {
     })
 
     if (isLoading) return (
-        <div className="flex flex-col items-center justify-center min-h-[400px] text-slate-500 gap-3">
+        <div className="flex flex-col items-center justify-center min-h-[400px] text-[var(--text-muted)] gap-3">
             <div className="w-8 h-8 border-4 border-blue-600/20 border-t-blue-600 rounded-full animate-spin" />
             <p className="font-medium animate-pulse">Loading amazing products...</p>
         </div>
     );
 
     if (error) return (
-        <div className="p-6 bg-red-50 border border-red-200 rounded-xl text-red-600 flex items-center gap-3">
-            <div className="p-2 bg-red-100 rounded-lg">⚠️</div>
+        <div className="p-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-red-600 dark:text-red-300 flex items-center gap-3">
+            <div className="p-2 bg-red-100 dark:bg-red-900/40 rounded-lg">⚠️</div>
             <div>
-                <p className="font-bold text-red-800">Something went wrong</p>
+                <p className="font-bold text-red-800 dark:text-red-200">Something went wrong</p>
                 <p className="text-sm">{error.message}</p>
             </div>
         </div>
@@ -30,7 +30,7 @@ const ProductPage = () => {
         <div className="space-y-8">
             <div className="flex items-center justify-between">
 
-                <h1 className="text-2xl font-bold">Products</h1>
+                <h1 className="text-2xl font-bold text-[var(--text-main)]">Products</h1>
 
                 <button className="flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-400 hover:bg-blue-500 text-white rounded-lg font-semibold transition-all shadow-sm hover:shadow-blue-200 active:scale-95">
                     <Plus size={18} />
@@ -50,12 +50,12 @@ const ProductPage = () => {
                     ))}
                 </div>
             ) : (
-                <div className="flex flex-col items-center justify-center py-20 px-4 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200">
-                    <h3 className="text-lg font-bold text-slate-800 mb-1">No products found</h3>
-                    <p className="text-slate-500 text-center max-w-sm mb-6">
+                <div className="flex flex-col items-center justify-center py-20 px-4 bg-[var(--bg-card)] rounded-2xl border-2 border-dashed border-[var(--border-color)]">
+                    <h3 className="text-lg font-bold text-[var(--text-main)] mb-1">No products found</h3>
+                    <p className="text-[var(--text-muted)] text-center max-w-sm mb-6">
                         Start building your store by adding your first product to the catalog.
                     </p>
-                    <button className="flex items-center gap-2 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg font-medium transition-colors">
+                    <button className="flex items-center gap-2 px-4 py-2 bg-[var(--text-main)] hover:bg-[var(--text-muted)] text-white dark:text-[var(--bg-main)] rounded-lg font-medium transition-colors">
                         <Plus size={16} />
                         Add First Product
                     </button>
