@@ -21,18 +21,8 @@ import helmet from 'helmet';
 
 // Middleware
 app.use(cors({ origin: ENV.CLIENT_URL || true, credentials: true }));
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'none'"],
-      fontSrc: ["'self'", "https://ecomm-5xbtn.sevalla.app", "data:"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      scriptSrc: ["'self'"],
-      imgSrc: ["'self'", 'data:', 'https:'],
-      connectSrc: ["'self'", process.env.CLIENT_URL],
-    },
-  },
-}));
+app.use(helmet());
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(clerkMiddleware());
