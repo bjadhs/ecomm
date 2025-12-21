@@ -8,3 +8,11 @@
 - ✅ address and wishlist router and controller
 - [NEXT] connect to mongoatlas 
 - fronend admin setup for deployment both to sevalla
+
+
+20thDecSat:
+
+21stDecSun:
+- Solved the issue when signin redirting to dashboard
+- Setup helmet for content security policy
+- Setup cors for origin and credentials

@@ -15,7 +15,7 @@ const App = () => {
       <Route path="/login" element={isSignedIn ? <Navigate to="/dashboard" /> : <LoginPage />} />
 
       <Route path="/" element={isSignedIn ? <DashboardLayout /> : <Navigate to="/login" />} >
-        <Route index element={<Navigate to="dashboard" />} />
+        <Route index element={<Navigate to="/dashboard" replace />} />
         <Route path="dashboard" element={<DashboardPage />} />
         <Route path="customer" element={<CustomerPage />} />
         <Route path="order" element={<OrderPage />} />
