@@ -24,7 +24,8 @@ app.use(cors({ origin: ENV.CLIENT_URL || true, credentials: true }));
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
-      defaultSrc: ["'self'"],
+      defaultSrc: ["'none'"],
+      fontSrc: ["'self'", "https://ecomm-5xbtn.sevalla.app", "data:"],
       styleSrc: ["'self'", "'unsafe-inline'"],
       scriptSrc: ["'self'"],
       imgSrc: ["'self'", 'data:', 'https:'],
