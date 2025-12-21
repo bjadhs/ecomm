@@ -29,11 +29,15 @@ app.use(helmet({
         "https://thorough-gopher-10.clerk.accounts.dev",
         "https://*.clerk.accounts.dev"
       ],
+      workerSrc: ["'self'", "blob:"],
       connectSrc: [
         "'self'",
         "https://*.clerk.accounts.dev",
         "wss://*.clerk.accounts.dev"
-      ]
+      ],
+      fontSrc: ["'self'", "https://ecomm-5xbtn.sevalla.app", "data:"],
+      imgSrc: ["'self'", "data:", "https://images.unsplash.com"],
+      styleSrc: ["'self'", "'unsafe-inline'"]
     }
   }
 }));
@@ -60,7 +64,7 @@ app.use(errorHandler);
 
 if (ENV.NODE_ENV == 'production') {
   app.use(express.static(path.join(__dirname, '../admin/dist')))
-  app.get('/{*any}', (req, res) => {
+  app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../admin', '/dist', '/index.html'))
   })
 }
