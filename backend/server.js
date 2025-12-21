@@ -10,6 +10,7 @@ import { errorHandler } from './middleware/errorMiddleware.js';
 import { clerkMiddleware } from '@clerk/express';
 import { serve } from 'inngest/express';
 import { inngest, functions } from './config/inngest.js';
+import helmet from 'helmet';
 
 dotenv.config();
 
@@ -17,11 +18,26 @@ const app = express();
 const __dirname = path.resolve();
 
 
-import helmet from 'helmet';
 
 // Middleware
 app.use(cors({ origin: ENV.CLIENT_URL || true, credentials: true }));
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      scriptSrc: [
+        "'self'",
+        "https://thorough-gopher-10.clerk.accounts.dev",
+        "https://*.clerk.accounts.dev"
+      ],
+      connectSrc: [
+        "'self'",
+        "https://*.clerk.accounts.dev",
+        "wss://*.clerk.accounts.dev"
+      ]
+    }
+  }
+}));
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
