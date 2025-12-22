@@ -9,7 +9,6 @@ export const protect = [requireAuth(), async (req, res, next) => {
 
         const user = await clerkClient.users.getUser(userId);
 
-
         if (!user) {
             return res.status(401).json({ message: "User not found" })
         }
@@ -24,15 +23,15 @@ export const protect = [requireAuth(), async (req, res, next) => {
 ]
 
 
-export const adminOnly = (req, res, next) => {
-    const adminEmail = req.user.emailAddresses?.find(
-        (email) => email.id === req.user.primaryEmailAddressId
-    )?.emailAddress;
+// export const adminOnly = (req, res, next) => {
+//     const adminEmail = req.user.emailAddresses?.find(
+//         (email) => email.id === req.user.primaryEmailAddressId
+//     )?.emailAddress;
 
-    if (adminEmail !== ENV.ADMIN_EMAIL) {
-        return res.status(403).json({ message: "Forbidden not Admin" })
-    }
-    next()
-}
+//     if (adminEmail !== ENV.ADMIN_EMAIL) {
+//         return res.status(403).json({ message: "Forbidden not Admin" })
+//     }
+//     next()
+// }
 
 

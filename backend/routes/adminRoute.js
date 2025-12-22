@@ -6,7 +6,7 @@ import { upload } from '../middleware/multerMiddleware.js';
 const router = express.Router();
 
 router.use(protect);
-router.use(adminOnly);
+// router.use(adminOnly);
 
 router.post("/products", upload.array('images', 3), createProduct);
 router.get('/products', getAllProducts);
