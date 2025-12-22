@@ -7,7 +7,6 @@
 Frontend: React + Tailwind + TanStack Query + Clerk Auth
 Backend: Node/Express + MongoDB + Inngest + Cloudinary
 Deployment: Sevalla (CICD GitHub → Prod)
-text
 
 ## Live Features (Admin Dashboard)
 ✅ **Dark/Light mode** toggle (persists localStorage)  
