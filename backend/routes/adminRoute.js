@@ -1,6 +1,6 @@
 import express from 'express';
 import { createProduct, getAllProducts, updateProduct, deleteProduct, getAllOrders, updateOrderStatus, getAllCustomers } from '../controllers/adminController.js';
-import { protect, adminOnly } from '../middleware/authMiddleware.js';
+import { protect } from '../middleware/authMiddleware.js';
 import { upload } from '../middleware/multerMiddleware.js';
 
 const router = express.Router();
