@@ -36,7 +36,7 @@ app.use(helmet({
         "wss://*.clerk.accounts.dev"
       ],
       fontSrc: ["'self'", "https://ecomm-5xbtn.sevalla.app", "data:"],
-      imgSrc: ["'self'", "data:", "https://images.unsplash.com"],
+      imgSrc: ["'self'", "data:", "https://images.unsplash.com", "https://img.clerk.com"],
       styleSrc: ["'self'", "'unsafe-inline'"]
     }
   }

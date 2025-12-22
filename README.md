@@ -1,32 +1,35 @@
-# Ecommerce Application
- backend as Nodejs Mongodb and fronend admin as ReactJS and user as ReactNative
+# Live Ecom Admin Dashboard
+**Full-stack MERN app** | Deployed: https://ecomm-5xbtn.sevalla.app  
+**Proves job-ready skills**: Auth → Protected CRUD → React Query → Dark mode
 
-## Frontend-Admin
-- Implemented consistent Dark/Light mode theme across all pages
-- Displayed Orders and Customers in the admin dashboard
-- 
+## Tech Stack
 
+Frontend: React + Tailwind + TanStack Query + Clerk Auth
+Backend: Node/Express + MongoDB + Inngest + Cloudinary
+Deployment: Sevalla (CICD GitHub → Prod)
+text
 
+## Live Features (Admin Dashboard)
+✅ **Dark/Light mode** toggle (persists localStorage)  
+✅ **Protected routes** (Clerk auth middleware)  
+✅ **Products grid** (React Query fetch + images)  
+✅ **Customers list** (full details populated)  
+✅ **Orders list** (customer names populated via Mongo populate)  
+✅ **Delete/Edit CRUD** (API mutations + auto-refetch)  
 
-## Backend
-- First created a boilerplate for the backend using express and mongoose
-- User model, router and controller to login and register
-- Middleware for authentication to protect each route for user and error middleware
-- ✅ address and wishlist router and controller
-- fronend admin setup for deployment both to sevalla
+## Backend (Production Ready)
 
-# Todos: 
-20thDecSat:
-- Tailwind Navbar/Sidebar + Products/Customers/Orders grids (TanStack Query fetches)
-- Fixed CORS/Clerk token/Helmet issues → Sevalla deployed but failed
+✅ User auth (login/register + JWT protect)
+✅ Mongo seed scripts (10+ products/customers/orders)
+✅ API routes: /api/products/customers/orders (protected)
+✅ CORS + Helmet CSP for Clerk scripts
+✅ Error middleware + validation
 
-21stDecSun:
-- Solved the issue when signin redirting to dashboard
-- Setup helmet for content security policy setting script-src and connect-src for clerk script
-- Setup cors for origin and credentials
+## Development Log (Recent Ships)
 
-22ndDecMon:
-- Admin: Customer and Order page debuged why order not fetching customer name
-- Admin: Implemented consistent Dark/Light mode theme across all pages
+**22 Dec**: Dark/Light theme + Orders populate debug → Live  
+**21 Dec**: Signin redirect + Helmet/CORS → Deploy working  
+**20 Dec**: Navbar/Sidebar + full CRUD grids → GitHub push  
 
-
+## Next (Tomorrow)
+- Admin: Product Page - Add new product, edit , delete, search, useMutation, upload images, refetch on every mutation
