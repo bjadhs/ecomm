@@ -6,11 +6,9 @@ import { User } from '../models/userModel.js';
 export const protect = [requireAuth(), async (req, res, next) => {
     try {
         const { userId } = getAuth(req);
-        console.log(`User ID: ${userId}`);
 
         const user = await clerkClient.users.getUser(userId);
 
-        console.log(`User: ${user}`);
 
         if (!user) {
             return res.status(401).json({ message: "User not found" })

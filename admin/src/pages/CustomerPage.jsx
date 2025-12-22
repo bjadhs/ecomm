@@ -31,8 +31,9 @@ const CustomerPage = () => {
                             <tr>
                                 <th className="table-head">Name</th>
                                 <th className="table-head">Email</th>
-                                <th className="table-head">Clerk ID</th>
                                 <th className="table-head">Joined Date</th>
+                                <th className="table-head">Orders</th>
+
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-[var(--border-color)]">
@@ -53,13 +54,12 @@ const CustomerPage = () => {
                                                 <span>{customer.email}</span>
                                             </div>
                                         </td>
-                                        <td className="p-4 whitespace-nowrap">
-                                            <span className="font-mono text-xs text-[var(--text-muted)] bg-[var(--bg-hover)] px-2 py-1 rounded">
-                                                {customer.clerkId}
-                                            </span>
-                                        </td>
+
                                         <td className="p-4 whitespace-nowrap text-sm text-[var(--text-muted)]">
                                             {new Date(customer.createdAt).toLocaleDateString()}
+                                        </td>
+                                        <td className="p-4 whitespace-nowrap text-sm text-[var(--text-muted)]">
+                                            {customer.name}
                                         </td>
                                     </tr>
                                 ))

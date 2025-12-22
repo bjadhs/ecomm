@@ -1,6 +1,5 @@
 import { NavLink } from "react-router";
-import { LayoutDashboard, Users, ShoppingCart, Package, Settings, LogOut, X } from "lucide-react";
-import { SignOutButton } from "@clerk/clerk-react";
+import { LayoutDashboard, Users, ShoppingCart, Package, X } from "lucide-react";
 
 const Sidebar = ({ closeSidebar }) => {
     const navItems = [

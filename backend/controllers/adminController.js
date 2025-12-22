@@ -132,7 +132,7 @@ export const deleteProduct = async (req, res) => {
 
 export const getAllOrders = async (req, res) => {
     try {
-        const orders = await Order.find().populate("user", ["name email"]).populate("items.product").sort({ createdAt: -1 });
+        const orders = await Order.find().populate("user", ["name", "email"]).populate("items.product").sort({ createdAt: -1 });
         res.status(200).json(orders);
     } catch (error) {
         console.log("Error getting orders", error);
