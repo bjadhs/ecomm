@@ -31,6 +31,7 @@ Deployment: Sevalla (CICD GitHub → Prod)
 - Updating backend controller to background image cleanup which slowed down the delete process almost 4sec, Request → Delete MongoDB (50ms) → Send Response IMMEDIATELY → [Background: Cloudinary cleanup] → User gets instant feedback
 
 - Updating backend controller to validate price and stock
+- Spend time on refactoring the code based on coderabitai suggestion and git merge
 
 
 
