@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { orderApi, customerApi } from "../lib/api";
+import { orderApi } from "../lib/api";
 import QueryState from "../components/QueryState";
 
 const OrderPage = () => {
@@ -8,10 +8,7 @@ const OrderPage = () => {
         queryKey: ['orders'],
         queryFn: orderApi.getAllOrders,
     })
-    const { data: customers = [] } = useQuery({
-        queryKey: ['customers'],
-        queryFn: customerApi.getAllCustomers,
-    })
+
 
     return (
         <div className="p-6">
@@ -41,12 +38,17 @@ const OrderPage = () => {
                                             <tr key={order._id} className="hover:bg-[var(--bg-hover)] transition-colors">
                                                 <td className="p-4 whitespace-nowrap">
                                                     <span className="font-mono text-sm text-[var(--text-muted)]">
-                                                        #{order._id.slice(-6)}
+                                                        #{String(order._id || '').slice(-6)}
                                                     </span>
                                                 </td>
                                                 <td className="p-4">
                                                     <div className="flex flex-col">
-                                                        <span className="text-sm font-medium text-[var(--text-main)]">{order.user.email}</span>
+                                                        <span className="text-sm font-medium text-[var(--text-main)]">
+                                                            {order.user?.name || "Deleted User"}
+                                                        </span>
+                                                        <span className="text-xs text-[var(--text-muted)]">
+                                                            {order.user?.email || "N/A"}
+                                                        </span>
                                                     </div>
                                                 </td>
                                                 <td className="p-4 whitespace-nowrap">
@@ -54,16 +56,15 @@ const OrderPage = () => {
                                                         order.status === 'shipped' ? 'bg-blue-200 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' :
                                                             'bg-yellow-200 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
                                                         }`}>
-                                                        {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                                                        {(order.status || 'pending').charAt(0).toUpperCase() + (order.status || 'pending').slice(1)}
                                                     </span>
                                                 </td>
                                                 <td className="p-4 whitespace-nowrap text-sm font-medium text-[var(--text-main)]">
-                                                    ${order.totalPrice.toFixed(2)}
+                                                    ${(order.totalPrice || 0).toFixed(2)}
                                                 </td>
                                                 <td className="p-4 whitespace-nowrap text-sm text-[var(--text-muted)]">
-                                                    {new Date(order.createdAt).toLocaleDateString()}
+                                                    {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : "N/A"}
                                                 </td>
-
                                             </tr>
                                         )
                                     })

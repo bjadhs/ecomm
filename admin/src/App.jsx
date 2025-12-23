@@ -7,6 +7,7 @@ import DashboardLayout from './layout';
 const App = () => {
   const { isSignedIn, isLoaded } = useAuth();
 
+
   if (!isLoaded) {
     return <PageLoader />;
   }
