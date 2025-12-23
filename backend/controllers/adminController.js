@@ -5,27 +5,35 @@ import cloudinary from '../config/cloudinary.js';
 
 export const createProduct = async (req, res) => {
     try {
-        const { name, description, price, stock, category } = req.body;
-        if (!name || !description || !price || !stock || !category) {
-            return res.status(400).json({ message: "All fields are required.." })
+        const { name, description, price, stock, category, images: bodyImages } = req.body;
+
+        if (!name || !description || price === undefined || price === null || stock === undefined || stock === null || !category) {
+            return res.status(400).json({ message: "All fields are required (name, description, price, stock, category)" })
         }
 
-        if (!Array.isArray(req.files) || !req.files.length === 0) {
-            return res.status(400).json({ message: "Please upload at least one image" })
+        let imageUrls = [];
+
+        // Handle File Uploads via Multer
+        if (req.files && Array.isArray(req.files) && req.files.length > 0) {
+            if (req.files.length > 3) {
+                return res.status(400).json({ message: "Please upload at most three images" })
+            }
+
+            // Upload images to cloudinary
+            const uploadPromise = req.files.map((file) => {
+                return cloudinary.uploader.upload(file.path, { folder: "products" })
+            })
+            const uploadResult = await Promise.all(uploadPromise);
+            imageUrls = uploadResult.map((image) => image.secure_url);
         }
-        if (req.files.length > 3) {
-            return res.status(400).json({ message: "Please upload at most three images" })
+        // fallback to images provided in body (URLs)
+        else if (bodyImages) {
+            imageUrls = Array.isArray(bodyImages) ? bodyImages : bodyImages.split(',').map(img => img.trim()).filter(img => img !== '');
         }
 
-        // Upload images to cloudinary
-        const uploadPromise = req.files.map((file) => {
-            return cloudinary.uploader.upload(file.path, { folder: "products" })
-        })
-        const uploadResult = await Promise.all(uploadPromise);
-        const imageUrl = uploadResult.map((image) => {
-            return image.secure_url;
-        })
-
+        if (imageUrls.length === 0) {
+            return res.status(400).json({ message: "Please upload or provide at least one image" })
+        }
 
         const product = await Product.create({
             name,
@@ -33,7 +41,7 @@ export const createProduct = async (req, res) => {
             price: parseFloat(price),
             stock: parseInt(stock),
             category,
-            images: imageUrl
+            images: imageUrls
         })
 
         res.status(201).json(product);
@@ -43,6 +51,7 @@ export const createProduct = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 }
+
 
 export const getAllProducts = async (req, res) => {
     try {

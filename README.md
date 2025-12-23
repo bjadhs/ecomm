@@ -25,10 +25,10 @@ Deployment: Sevalla (CICD GitHub → Prod)
 ✅ Error middleware + validation
 
 ## Development Log (Recent Ships)
-
+**23 Dec**: Product Edit + Delete → Live  
 **22 Dec**: Dark/Light theme + Orders populate debug → Live  
 **21 Dec**: Signin redirect + Helmet/CORS → Deploy working  
 **20 Dec**: Navbar/Sidebar + full CRUD grids → GitHub push  
 
-## Next (Tomorrow)
-- Admin: Product Page - Add new product, edit , delete, search, useMutation, upload images, refetch on every mutation
+## Next & Tomorrow
+- Admin: Product Page - upload images, refetch on every mutation

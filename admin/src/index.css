@@ -68,10 +68,72 @@
     }
 
     .card-minimal {
-        @apply bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl shadow-sm overflow-hidden;
+        @apply bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md hover:-translate-y-1;
     }
 
     .stat-badge {
         @apply text-xs font-medium px-2 py-1 rounded-full;
+    }
+
+    /* Shared Component Classes */
+    .input-base {
+        @apply w-full px-4 py-2.5 bg-[var(--bg-hover)] border border-[var(--border-color)] rounded-xl text-[var(--text-main)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed;
+    }
+
+    .btn-primary {
+        @apply flex items-center justify-center gap-2 px-5 py-2.5 bg-gradient-to-br from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl font-bold transition-all shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed;
+    }
+
+    .btn-secondary {
+        @apply flex items-center justify-center gap-2 px-5 py-2.5 border border-[var(--border-color)] text-[var(--text-main)] rounded-xl font-semibold hover:bg-[var(--bg-hover)] transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
+    }
+
+    .modal-overlay {
+        @apply fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md transition-all;
+        animation: fade-in 0.2s ease-out both;
+    }
+
+    .modal-content {
+        @apply bg-[var(--bg-main)] w-full max-w-lg rounded-3xl shadow-2xl border border-[var(--border-color)] overflow-hidden;
+        animation: fade-in 0.2s ease-out both;
+    }
+
+    .empty-state-container {
+        @apply flex flex-col items-center justify-center py-24 px-6 bg-[var(--bg-card)] rounded-3xl border-2 border-dashed border-[var(--border-color)] text-center;
+    }
+
+    .grid-products {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        @apply gap-8;
+    }
+
+    .error-card {
+        @apply p-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-2xl text-red-600 dark:text-red-300 flex items-center gap-4 transition-all;
+        animation: fade-in 0.2s ease-out both;
+    }
+
+    .spinner-container {
+        @apply flex flex-col items-center justify-center min-h-[400px] text-[var(--text-muted)] gap-4;
+    }
+
+    .spinner {
+        @apply w-12 h-12 border-4 border-blue-600/20 border-t-blue-600 rounded-full animate-spin;
+    }
+}
+
+@layer utilities {
+    .fade-in {
+        animation: fade-in 0.2s ease-out both;
+    }
+
+    @keyframes fade-in {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
     }
 }

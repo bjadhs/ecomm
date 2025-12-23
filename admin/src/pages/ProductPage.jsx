@@ -1,68 +1,138 @@
-import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { productApi } from '../lib/api';
 import ProductCard from '../components/ProductCard';
+import ProductModal from '../components/ProductModal';
+import QueryState from '../components/QueryState';
 import { Plus } from 'lucide-react';
 
 const ProductPage = () => {
+    const [showModal, setShowModal] = useState(false);
+    const [editingProduct, setEditingProduct] = useState(null);
+    const queryClient = useQueryClient();
+
     const { data: products = [], isLoading, error } = useQuery({
         queryKey: ['products'],
         queryFn: productApi.getAllProducts,
     })
 
-    if (isLoading) return (
-        <div className="flex flex-col items-center justify-center min-h-[400px] text-[var(--text-muted)] gap-3">
-            <div className="w-8 h-8 border-4 border-blue-600/20 border-t-blue-600 rounded-full animate-spin" />
-            <p className="font-medium animate-pulse">Loading amazing products...</p>
-        </div>
-    );
+    const createProductMutation = useMutation({
+        mutationFn: productApi.createProduct,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['products'] });
+            handleCloseModal();
+        }
+    })
 
-    if (error) return (
-        <div className="p-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-red-600 dark:text-red-300 flex items-center gap-3">
-            <div className="p-2 bg-red-100 dark:bg-red-900/40 rounded-lg">⚠️</div>
-            <div>
-                <p className="font-bold text-red-800 dark:text-red-200">Something went wrong</p>
-                <p className="text-sm">{error.message}</p>
-            </div>
+    const updateProductMutation = useMutation({
+        mutationFn: ({ id, ...data }) => productApi.updateProduct(id, data),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['products'] });
+            handleCloseModal();
+        }
+    })
+
+    const deleteProductMutation = useMutation({
+        mutationFn: productApi.deleteProduct,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['products'] });
+        }
+    })
+
+    const handleOpenCreateModal = () => {
+        setEditingProduct(null);
+        setShowModal(true);
+    };
+
+    const handleOpenEditModal = (product) => {
+        setEditingProduct(product);
+        setShowModal(true);
+    };
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+        setEditingProduct(null);
+        createProductMutation.reset();
+        updateProductMutation.reset();
+    };
+
+    const handleSubmitProduct = (productData) => {
+        if (editingProduct) {
+            updateProductMutation.mutate({ id: editingProduct._id, ...productData });
+        } else {
+            createProductMutation.mutate(productData);
+        }
+    }
+
+    const handleDeleteProduct = (id) => {
+        if (window.confirm("Are you sure you want to delete this product?")) {
+            deleteProductMutation.mutate(id);
+        }
+    }
+
+    const emptyState = (
+        <div className="empty-state-container fade-in">
+            <h3 className="text-lg font-bold text-[var(--text-main)] mb-1">No products found</h3>
+            <p className="text-[var(--text-muted)] text-center max-w-sm mb-6">
+                Start building your store by adding your first product to the catalog.
+            </p>
+            <button
+                onClick={handleOpenCreateModal}
+                className="btn-primary"
+            >
+                <Plus size={16} />
+                Add First Product
+            </button>
         </div>
     );
 
     return (
-        <div className="space-y-8">
-            <div className="flex items-center justify-between">
-
-                <h1 className="text-2xl font-bold text-[var(--text-main)]">Products</h1>
-
-                <button className="flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-400 hover:bg-blue-500 text-white rounded-lg font-semibold transition-all shadow-sm hover:shadow-blue-200 active:scale-95">
-                    <Plus size={18} />
-                    Add New Product
+        <div className="space-y-10 fade-in">
+            <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h1 className="text-3xl font-extrabold text-[var(--text-main)] tracking-tight">Products</h1>
+                    <p className="text-sm text-[var(--text-muted)] mt-1">Manage your storefront inventory and listings</p>
+                </div>
+                <button
+                    onClick={handleOpenCreateModal}
+                    className="btn-primary self-start sm:self-auto"
+                >
+                    <Plus size={20} strokeWidth={2.5} />
+                    <span>Add New Product</span>
                 </button>
-            </div>
+            </header>
 
-            {products.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
+
+            <QueryState
+                isLoading={isLoading}
+                error={error}
+                loadingMessage="Loading amazing products..."
+                isEmpty={products.length === 0}
+                emptyComponent={emptyState}
+            >
+                <div className="grid-products">
                     {products.map(product => (
                         <ProductCard
                             key={product._id}
                             product={product}
-                            onEdit={() => console.log('Edit', product._id)}
-                            onDelete={() => console.log('Delete', product._id)}
+                            onEdit={handleOpenEditModal}
+                            onDelete={handleDeleteProduct}
                         />
                     ))}
                 </div>
-            ) : (
-                <div className="flex flex-col items-center justify-center py-20 px-4 bg-[var(--bg-card)] rounded-2xl border-2 border-dashed border-[var(--border-color)]">
-                    <h3 className="text-lg font-bold text-[var(--text-main)] mb-1">No products found</h3>
-                    <p className="text-[var(--text-muted)] text-center max-w-sm mb-6">
-                        Start building your store by adding your first product to the catalog.
-                    </p>
-                    <button className="flex items-center gap-2 px-4 py-2 bg-[var(--text-main)] hover:bg-[var(--text-muted)] text-white dark:text-[var(--bg-main)] rounded-lg font-medium transition-colors">
-                        <Plus size={16} />
-                        Add First Product
-                    </button>
-                </div>
+            </QueryState>
+
+            {showModal && (
+                <ProductModal
+                    onClose={handleCloseModal}
+                    onSubmit={handleSubmitProduct}
+                    mutation={editingProduct ? updateProductMutation : createProductMutation}
+                    initialData={editingProduct}
+                />
             )}
         </div>
     )
 }
 
-export default ProductPage
+
+export default ProductPage;
