@@ -26,7 +26,6 @@ const CustomerPage = () => {
                                     <th className="table-head">Name</th>
                                     <th className="table-head">Email</th>
                                     <th className="table-head">Joined Date</th>
-                                    <th className="table-head">Orders</th>
 
                                 </tr>
                             </thead>
@@ -45,16 +44,14 @@ const CustomerPage = () => {
                                             <td className="p-4">
                                                 <div className="flex items-center gap-2 text-[var(--text-muted)]">
                                                     <Mail size={14} />
-                                                    <span>{customer.email}</span>
+                                                    <span>{customer.email || "N/A"}</span>
                                                 </div>
                                             </td>
 
                                             <td className="p-4 whitespace-nowrap text-sm text-[var(--text-muted)]">
                                                 {new Date(customer.createdAt).toLocaleDateString()}
                                             </td>
-                                            <td className="p-4 whitespace-nowrap text-sm text-[var(--text-muted)]">
-                                                {customer.name}
-                                            </td>
+
                                         </tr>
                                     ))
                                 ) : (

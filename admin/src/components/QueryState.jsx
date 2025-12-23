@@ -25,7 +25,7 @@ const QueryState = ({
                 </div>
                 <div>
                     <h3 className="font-bold text-red-800 dark:text-red-200">Something went wrong</h3>
-                    <p className="text-sm opacity-90">{error.message || "An unexpected error occurred. Please try again later."}</p>
+                    <p className="text-sm opacity-90">{error.response?.data?.message || error.message || "An unexpected error occurred. Please try again later."}</p>
                 </div>
             </div>
         );

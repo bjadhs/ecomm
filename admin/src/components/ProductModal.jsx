@@ -31,11 +31,16 @@ const ProductModal = ({ onClose, onSubmit, mutation, initialData }) => {
     };
 
     const handleSubmit = (e) => {
+        const price = parseFloat(formData.price);
+        const stock = Number(formData.stock);
+        if (isNaN(price) || isNaN(stock)) {
+            return;
+        }
         e.preventDefault();
         const productData = {
             ...formData,
-            price: parseFloat(formData.price),
-            stock: Number(formData.stock),
+            price,
+            stock,
             images: formData.images.split(',').map(img => img.trim()).filter(img => img !== ''),
         };
         onSubmit(productData);
@@ -56,7 +61,7 @@ const ProductModal = ({ onClose, onSubmit, mutation, initialData }) => {
                             {isEdit ? "Update your product details" : "Fill in the details for your new listing"}
                         </p>
                     </div>
-                    <button onClick={onClose} className="btn-icon">
+                    <button onClick={onClose} className="btn-icon" aria-label="Close modal">
                         <X size={20} />
                     </button>
                 </div>
@@ -91,7 +96,8 @@ const ProductModal = ({ onClose, onSubmit, mutation, initialData }) => {
                             <input
                                 type="number"
                                 name="price"
-                                step="0.01"
+                                step="1"
+                                min="0"
                                 required
                                 disabled={isPending}
                                 value={formData.price}

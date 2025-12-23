@@ -25,10 +25,24 @@ Deployment: Sevalla (CICD GitHub → Prod)
 ✅ Error middleware + validation
 
 ## Development Log (Recent Ships)
-**23 Dec**: Product Edit + Delete → Live  
+**23 Dec**: 
+- Product Edit + Delete → Live 
+- QueryState to handle loading and error states all pages
+- Updating backend controller to background image cleanup which slowed down the delete process almost 4sec, Request → Delete MongoDB (50ms) → Send Response IMMEDIATELY → [Background: Cloudinary cleanup] → User gets instant feedback
+
+- Updating backend controller to validate price and stock
+
+
+
+
+
 **22 Dec**: Dark/Light theme + Orders populate debug → Live  
 **21 Dec**: Signin redirect + Helmet/CORS → Deploy working  
 **20 Dec**: Navbar/Sidebar + full CRUD grids → GitHub push  
 
 ## Next & Tomorrow
 - Admin: Product Page - upload images, refetch on every mutation
+
+
+# Image reference
+https://images.unsplash.com/photo-1607936854279-55e8a4c64888?q=80&w=928&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D

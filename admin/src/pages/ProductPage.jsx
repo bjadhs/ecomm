@@ -36,6 +36,9 @@ const ProductPage = () => {
         mutationFn: productApi.deleteProduct,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['products'] });
+        },
+        onError: () => {
+            alert("Failed to delete product");
         }
     })
 

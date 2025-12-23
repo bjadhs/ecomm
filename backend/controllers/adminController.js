@@ -10,6 +10,16 @@ export const createProduct = async (req, res) => {
         if (!name || !description || price === undefined || price === null || stock === undefined || stock === null || !category) {
             return res.status(400).json({ message: "All fields are required (name, description, price, stock, category)" })
         }
+        const parsedPrice = parseFloat(price);
+        const parsedStock = parseInt(stock);
+
+        if (isNaN(parsedPrice) || parsedPrice <= 0) {
+            return res.status(400).json({ message: "Price must be a positive number" })
+        }
+
+        if (isNaN(parsedStock) || parsedStock < 0) {
+            return res.status(400).json({ message: "Stock must be a non-negative integer" })
+        }
 
         let imageUrls = [];
 
@@ -28,24 +38,31 @@ export const createProduct = async (req, res) => {
         }
         // fallback to images provided in body (URLs)
         else if (bodyImages) {
-            imageUrls = Array.isArray(bodyImages) ? bodyImages : bodyImages.split(',').map(img => img.trim()).filter(img => img !== '');
+            if (Array.isArray(bodyImages)) {
+                imageUrls = bodyImages;
+            } else if (typeof bodyImages === 'string') {
+                imageUrls = bodyImages.split(',').map(img => img.trim()).filter(img => img !== '');
+            } else {
+                return res.status(400).json({ message: "Images must be an array or comma-separated string" });
+            }
+
+            if (imageUrls.length === 0) {
+                return res.status(400).json({ message: "Please upload or provide at least one image" })
+            }
+
+            const product = await Product.create({
+                name,
+                description,
+                price: parsedPrice,
+                stock: parsedStock,
+                category,
+                images: imageUrls
+            })
+
+            res.status(201).json(product);
+            console.log("Product created successfully", product);
+
         }
-
-        if (imageUrls.length === 0) {
-            return res.status(400).json({ message: "Please upload or provide at least one image" })
-        }
-
-        const product = await Product.create({
-            name,
-            description,
-            price: parseFloat(price),
-            stock: parseInt(stock),
-            category,
-            images: imageUrls
-        })
-
-        res.status(201).json(product);
-        console.log("Product created successfully", product);
     } catch (error) {
         console.log("Error creating product", error);
         res.status(500).json({ message: error.message });
@@ -120,17 +137,22 @@ export const deleteProduct = async (req, res) => {
         if (!product) {
             return res.status(404).json({ message: "Product not found" })
         }
-        // Delete images from cloudinary
         if (product.images && product.images.length > 0) {
-            const deletePromises = product.images.map((imageUrl) => {
-                const publicId = imageUrl.split('/').slice(-2).join('/').split('.')[0];
-                return cloudinary.uploader.destroy(publicId);
-            });
-            await Promise.all(deletePromises);
+            (async () => {
+                try {
+                    const deletePromises = product.images.map((imageUrl) => {
+                        const publicId = imageUrl.split('/').slice(-2).join('/').split('.')[0];
+                        return cloudinary.uploader.destroy(publicId);
+                    });
+                    await Promise.all(deletePromises);
+                } catch (error) {
+                }
+            })();
         }
-        await Product.findByIdAndDelete(id);
 
+        await Product.findByIdAndDelete(id);
         res.status(200).json({ message: "Product deleted successfully" });
+
     } catch (error) {
         console.log("Error deleting product", error);
         res.status(500).json({ message: error.message });
