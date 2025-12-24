@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+@layer base {
+    :root {
+        --bg-main: #f8fafc;
+        --bg-card: #ffffff;
+        --bg-hover: #b4d0eb;
+
+        --text-main: #0f172a;
+        --text-muted: #37404d;
+        /* slate-500 - Darker for visibility on light bg */
+        --text-color: #475569;
+        /* slate-600 - Added as requested for icons/secondary text */
+
+        --border-color: #e2e8f0;
+
+        --color-primary: #1149a3;
+    }
+
+    .dark {
+        --bg-main: #0f172a;
+        --bg-card: #1e293b;
+        --bg-hover: #334155;
+
+        --text-main: #f8fafc;
+        --text-muted: #94a3b8;
+        /* slate-400 - Lighter for visibility on dark bg */
+        --text-color: #cbd5e1;
+        /* slate-300 */
+
+        --border-color: #334155;
+
+        --color-primary: #79b3f9;
+    }
+}
+
+@layer components {
+    body {
+        @apply bg-[var(--bg-main)] text-[var(--text-main)] transition-colors duration-300;
+    }
+  }

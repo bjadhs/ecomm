@@ -37,8 +37,8 @@ const ProductPage = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['products'] });
         },
-        onError: () => {
-            alert("Failed to delete product");
+        onError: (error) => {
+            alert(error?.response?.data?.message || error.message || "Failed to delete product");
         }
     })
 

@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { User, Menu as MenuIcon, LogOut, Moon, Sun } from "lucide-react";
-import { SignOutButton, useUser, useAuth } from "@clerk/clerk-react";
+import { SignOutButton, useUser } from "@clerk/clerk-react";
 
 const Navbar = ({ onMenuClick }) => {
     const [showProfileMenu, setShowProfileMenu] = useState(false);
