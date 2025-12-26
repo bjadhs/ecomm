@@ -5,7 +5,7 @@ import type {Product, Cart, Order} from "../types/index.ts";
 
 export const productApi = {
     getAllProducts: async (): Promise<Product[]> => {
-        const { data } = await axiosInstance.get<Product[]>('/admin/products');
+        const { data } = await axiosInstance.get<Product[]>('/products');
         return data;
     },
 

@@ -1,5 +1,6 @@
 import express from 'express';
-import { createProduct, getAllProducts, updateProduct, deleteProduct, getAllOrders, updateOrderStatus, getAllCustomers } from '../controllers/adminController.js';
+import { createProduct, updateProduct, deleteProduct, getAllOrders, updateOrderStatus, getAllCustomers } from '../controllers/adminController.js';
+import { getAllProducts } from '../controllers/productController.js';
 import { protect } from '../middleware/authMiddleware.js';
 import { upload } from '../middleware/multerMiddleware.js';
 

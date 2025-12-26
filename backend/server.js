@@ -7,6 +7,7 @@ import connectDB from './config/database.js';
 import userRoute from './routes/userRoute.js';
 import adminRoute from './routes/adminRoute.js';
 import orderRoute from './routes/orderRoute.js';
+import productRoute from './routes/productRoute.js';
 import { errorHandler } from './middleware/errorMiddleware.js';
 import { clerkMiddleware } from '@clerk/express';
 import { serve } from 'inngest/express';
@@ -52,6 +53,7 @@ app.use(clerkMiddleware());
 app.use('/api/users', userRoute);
 app.use('/api/admin', adminRoute);
 app.use('/api/orders', orderRoute);
+app.use('/api/products', productRoute);
 
 // Health check route
 app.get('/api/health', (req, res) => {

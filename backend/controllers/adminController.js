@@ -70,15 +70,7 @@ export const createProduct = async (req, res) => {
 }
 
 
-export const getAllProducts = async (req, res) => {
-    try {
-        const products = await Product.find().sort({ createdAt: -1 });
-        res.status(200).json(products);
-    } catch (error) {
-        console.log("Error getting products", error);
-        res.status(500).json({ message: error.message });
-    }
-}
+
 
 
 export const updateProduct = async (req, res) => {

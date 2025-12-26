@@ -26,13 +26,18 @@ export const addToCart = async (req, res) => {
             cart = await Cart.create({ clerkId, items: [] });
         }
 
-        // Check if product already in cart
+            // Check if product already in cart
         const existingItem = cart.items.find(item => item.product.toString() === productId);
-        if (existingItem) {
-            existingItem.quantity += quantity;
-        } else {
-            cart.items.push({ product: productId, quantity });
-        }
+        const currentQuantity = existingItem ? existingItem.quantity : 0;
+        if (product.stock < currentQuantity + quantity) {
+          return res.status(400).json({ message: "Insufficient stock" });
+          }
+
+     if (existingItem) {
+         existingItem.quantity += quantity;
+     } else {
+         cart.items.push({ product: productId, quantity });
+     }
 
         await cart.save();
         await cart.populate('items.product');
