@@ -6,6 +6,7 @@ import { ENV } from './config/env.js';
 import connectDB from './config/database.js';
 import userRoute from './routes/userRoute.js';
 import adminRoute from './routes/adminRoute.js';
+import orderRoute from './routes/orderRoute.js';
 import { errorHandler } from './middleware/errorMiddleware.js';
 import { clerkMiddleware } from '@clerk/express';
 import { serve } from 'inngest/express';
@@ -50,6 +51,7 @@ app.use(clerkMiddleware());
 // Routes
 app.use('/api/users', userRoute);
 app.use('/api/admin', adminRoute);
+app.use('/api/orders', orderRoute);
 
 // Health check route
 app.get('/api/health', (req, res) => {
@@ -66,14 +68,14 @@ if (ENV.NODE_ENV == 'production') {
   app.use('/admin', express.static(path.join(__dirname, '../admin/dist')));
   app.get('/admin/*', (_, res) => {
     res.sendFile(path.join(__dirname, '../admin', '/dist', '/index.html'))
-  })
+  });
 
-  
   app.use(express.static(path.join(__dirname, '../frontend/dist')));
   app.get('/*', (_, res) => {
     res.sendFile(path.join(__dirname, '../frontend', '/dist', '/index.html'))
-  })
+  });
 }
+
 
 const startServer = async () => {
   app.listen(ENV.PORT, () => {

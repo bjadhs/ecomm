@@ -2,7 +2,7 @@ import { Order } from "../models/orderModel.js";
 
 export const createOrder = async (req, res) => {
     try {
-        const { clerkId } = req.user;
+        const clerkId = req.user.id;
         const { items, shippingAddress, paymentResult, totalPrice } = req.body;
 
         if (!items && items.length === 0) {
@@ -27,7 +27,7 @@ export const createOrder = async (req, res) => {
 
 export const getUsersOrders = async (req, res) => {
     try {
-        const { clerkId } = req.user;
+        const clerkId = req.user.id;
 
         const orders = await Order.find({ clerkId }).populate("items.product").sort({ createdAt: -1 });
         console.log("Orders fetched successfully", orders);
