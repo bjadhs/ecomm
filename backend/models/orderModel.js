@@ -37,13 +37,12 @@ const OrderSchema = new mongoose.Schema({
     },
     items: [OrderItemSchema],
     shippingAddress: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Address",
+        type: Object,
         required: true
     },
     paymentResult: {
         type: Object,
-        required: true
+        default: {}
     },
     totalPrice: {
         type: Number,

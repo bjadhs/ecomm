@@ -25,11 +25,11 @@ const Sidebar = ({ closeSidebar }) => {
                 {navItems.map((item) => (
                     <NavLink
                         key={item.path}
-                        to={item.path}
+                        to={`/admin${item.path}`}
                         onClick={() => closeSidebar()}
                         className={({ isActive }) => `
                             sidebar-link
-                            ${isActive ? 'sidebar-link-active' : 'sidebar-link-inactive'}
+                        ${isActive ? 'sidebar-link-active' : 'sidebar-link-inactive'}
                         `}
                     >
                         {item.icon}

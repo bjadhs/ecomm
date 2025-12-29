@@ -1,15 +1,24 @@
 import { Order } from "../models/orderModel.js";
 
+import { User } from "../models/userModel.js";
+import { Cart } from "../models/cartModel.js";
+
 export const createOrder = async (req, res) => {
     try {
         const clerkId = req.user.id;
         const { items, shippingAddress, paymentResult, totalPrice } = req.body;
 
-        if (!items && items.length === 0) {
+        if (!items || items.length === 0) {
             return res.status(400).json({ message: "Order items are required" })
         }
 
-        const order = Order.create({
+        const user = await User.findOne({ clerkId });
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const order = await Order.create({
+            user: user._id,
             clerkId,
             shippingAddress,
             items,
@@ -17,6 +26,10 @@ export const createOrder = async (req, res) => {
             totalPrice,
         })
         console.log("Order created successfully", order);
+
+        // Clear user's cart
+        await Cart.findOneAndDelete({ clerkId });
+
         res.status(201).json(order);
     } catch (error) {
         console.log("Error creating order", error);

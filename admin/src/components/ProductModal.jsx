@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { X, Save, AlertCircle, Loader2 } from 'lucide-react';
 
 const ProductModal = ({ onClose, onSubmit, mutation, initialData }) => {

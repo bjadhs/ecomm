@@ -13,10 +13,10 @@ const App = () => {
   }
   return (
     <Routes>
-      <Route path="/login" element={isSignedIn ? <Navigate to="/dashboard" /> : <LoginPage />} />
+      <Route path="/admin/login" element={isSignedIn ? <Navigate to="/admin/dashboard" /> : <LoginPage />} />
 
-      <Route path="/" element={isSignedIn ? <DashboardLayout /> : <Navigate to="/login" />} >
-        <Route index element={<Navigate to="/dashboard" replace />} />
+      <Route path="/admin" element={isSignedIn ? <DashboardLayout /> : <Navigate to="/admin/login" />} >
+        <Route index element={<Navigate to="/admin/dashboard" replace />} />
         <Route path="dashboard" element={<DashboardPage />} />
         <Route path="customer" element={<CustomerPage />} />
         <Route path="order" element={<OrderPage />} />

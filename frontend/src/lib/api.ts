@@ -1,5 +1,5 @@
 import { axiosInstance } from "./axios.ts";
-import type {Product, Cart, Order} from "../types/index.ts";
+import type { Product, Cart, Order } from "../types/index.ts";
 
 
 
@@ -12,11 +12,11 @@ export const productApi = {
 }
 
 export const cartApi = {
-    getCart: async (): Promise<Cart> =>{
+    getCart: async (): Promise<Cart> => {
         const { data } = await axiosInstance.get<Cart>('/users/cart');
         return data;
     },
-    addToCart: async (productId: string, quantity: number): Promise<Cart>=> {
+    addToCart: async (productId: string, quantity: number): Promise<Cart> => {
         const { data } = await axiosInstance.post<Cart>('/users/cart', { productId, quantity });
         return data;
     },
@@ -33,6 +33,10 @@ export const cartApi = {
 export const orderApi = {
     getUserOrders: async (): Promise<Order[]> => {
         const { data } = await axiosInstance.get('/orders');
+        return data;
+    },
+    createOrder: async (orderData: any): Promise<Order> => {
+        const { data } = await axiosInstance.post('/orders', orderData);
         return data;
     }
 };

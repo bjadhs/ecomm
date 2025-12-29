@@ -30,6 +30,10 @@ export const orderApi = {
     getAllOrders: async () => {
         const { data } = await axiosInstance.get('/admin/orders');
         return data;
+    },
+    updateOrderStatus: async (id, status) => {
+        const { data } = await axiosInstance.patch(`/admin/order/${id}/status`, { status });
+        return data;
     }
 }
 
