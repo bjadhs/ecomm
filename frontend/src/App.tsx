@@ -6,6 +6,7 @@ import CartPage from './pages/CartPage';
 import OrderPage from './pages/OrderPage';
 
 import DashboardLayout from './layout';
+import AddressPage from './pages/AddressPage';
 
 const App = () => {
   const { isSignedIn } = useAuth();
@@ -25,6 +26,7 @@ const App = () => {
         <Route path='home' element={<HomePage />} />
         <Route path='cart' element={<CartPage />} />
         <Route path='orders' element={<OrderPage />} />
+        <Route path='address' element={<AddressPage />} />
       </Route>
     </Routes>
   );

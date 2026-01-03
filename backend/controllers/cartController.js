@@ -26,18 +26,18 @@ export const addToCart = async (req, res) => {
             cart = await Cart.create({ clerkId, items: [] });
         }
 
-            // Check if product already in cart
+        // Check if product already in cart
         const existingItem = cart.items.find(item => item.product.toString() === productId);
         const currentQuantity = existingItem ? existingItem.quantity : 0;
         if (product.stock < currentQuantity + quantity) {
-          return res.status(400).json({ message: "Insufficient stock" });
-          }
+            return res.status(400).json({ message: "Insufficient stock" });
+        }
 
-     if (existingItem) {
-         existingItem.quantity += quantity;
-     } else {
-         cart.items.push({ product: productId, quantity });
-     }
+        if (existingItem) {
+            existingItem.quantity += quantity;
+        } else {
+            cart.items.push({ product: productId, quantity });
+        }
 
         await cart.save();
         await cart.populate('items.product');
@@ -132,22 +132,4 @@ export const deleteFromCart = async (req, res) => {
         console.log("Error deleting from cart", error);
         res.status(500).json({ message: error.message });
     }
-}
-
-//Addressess
-export const addAddress = async (req, res) => {
-}
-export const getAddress = async (req, res) => {
-}
-export const updateAddress = async (req, res) => {
-}
-export const deleteAddress = async (req, res) => {
-}
-
-//Wishlist
-export const addToWishlist = async (req, res) => {
-}
-export const getWishlist = async (req, res) => {
-}
-export const deleteFromWishlist = async (req, res) => {
 }
