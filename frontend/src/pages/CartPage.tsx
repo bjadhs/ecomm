@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Loader2, Trash2, Plus, Minus, ShoppingCart } from 'lucide-react';
 import { useNavigate } from 'react-router';
-import { cartApi, orderApi } from '../lib/api';
+import { cartApi } from '../lib/api';
 
 const CartPage = () => {
   const queryClient = useQueryClient();
@@ -25,19 +25,6 @@ const CartPage = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cart'] });
     },
-  });
-
-  const checkoutMutation = useMutation({
-    mutationFn: orderApi.createOrder,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['cart'] });
-      // navigate to orders page
-      navigate('/orders');
-    },
-    onError: (err: any) => {
-      console.error("Failed to place order", err);
-      // Fallback for error handling - could add local state error message if needed
-    }
   });
 
   if (isLoading) {
@@ -69,36 +56,6 @@ const CartPage = () => {
   const shipping = cartItems.length > 0 ? 0 : 0;
   const tax = subtotal * 0.1;
   const total = subtotal + shipping + tax;
-
-  const handleCheckout = () => {
-    if (!cartItems.length) return;
-
-    const orderData = {
-      items: cartItems.map(item => ({
-        product: item.product._id,
-        name: item.product.name,
-        price: item.product.price,
-        quantity: item.quantity,
-        image: item.product.images?.[0]
-      })),
-      totalPrice: total,
-      shippingAddress: {
-        address: "123 Simple St",
-        city: "Simplicity",
-        postalCode: "12345",
-        country: "SimpleCountry"
-      },
-      paymentResult: {
-        id: `SIM-${Date.now()}`,
-        status: "paid",
-        update_time: new Date().toISOString(),
-        email_address: "simple@example.com"
-      }
-    };
-
-    checkoutMutation.mutate(orderData);
-  };
-
   return (
     <div className='min-h-screen p-6'>
       <div className='max-w-7xl mx-auto'>
@@ -248,13 +205,10 @@ const CartPage = () => {
                 </div>
 
                 <button
-                  onClick={handleCheckout}
-                  disabled={checkoutMutation.isPending}
+                  onClick={() => navigate('/address')}
+                  disabled={cartItems.length === 0}
                   className='w-full bg-(--color-primary) text-white py-3 px-4 rounded-lg font-semibold hover:opacity-90 transition-opacity mb-3 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2'
                 >
-                  {checkoutMutation.isPending && (
-                    <Loader2 className='w-4 h-4 animate-spin' />
-                  )}
                   Proceed to Checkout
                 </button>
                 <a

@@ -4,10 +4,15 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { ENV } from './config/env.js';
 import connectDB from './config/database.js';
-import userRoute from './routes/userRoute.js';
+
+// Routes
+import cartRoute from './routes/cartRoute.js';
 import adminRoute from './routes/adminRoute.js';
 import orderRoute from './routes/orderRoute.js';
 import productRoute from './routes/productRoute.js';
+import addressRoute from './routes/addressRoute.js';
+
+// Middleware
 import { errorHandler } from './middleware/errorMiddleware.js';
 import { clerkMiddleware } from '@clerk/express';
 import { serve } from 'inngest/express';
@@ -19,9 +24,6 @@ dotenv.config();
 const app = express();
 const __dirname = path.resolve();
 
-
-
-// Middleware
 app.use(cors({ origin: ENV.CLIENT_URL || true, credentials: true }));
 app.use(helmet({
   contentSecurityPolicy: {
@@ -50,7 +52,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(clerkMiddleware());
 
 // Routes
-app.use('/api/users', userRoute);
+app.use('/api/cart', cartRoute);
+app.use('/api/address', addressRoute);
 app.use('/api/admin', adminRoute);
 app.use('/api/orders', orderRoute);
 app.use('/api/products', productRoute);

@@ -47,3 +47,15 @@ export interface Order {
     deliveredAt?: string;
     shippedAt?: string;
 }
+
+export interface Address {
+    _id?: string;
+    label: string;
+    fullName: string;
+    streetAddress: string;
+    city: string;
+    state: string;
+    zipcode: string;
+    phone: string;
+    isDefault: boolean;
+}
