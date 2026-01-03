@@ -31,7 +31,8 @@ const addressSchema = new mongoose.Schema({
     },
     userId: {
         type: String,
-        required: true
+        required: true,
+        index: true
     },
     isDefault: {
         type: Boolean,

@@ -9,7 +9,7 @@ const AddressPage = () => {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const [isAddingNew, setIsAddingNew] = useState(false);
-    const [selectedAddressIndex, setSelectedAddressIndex] = useState<number | null>(null);
+    const [selectedAddressIndex, setSelectedAddressIndex] = useState<string | null>(null);
     const [editingId, setEditingId] = useState<string | null>(null);
 
     // Form state
@@ -96,8 +96,6 @@ const AddressPage = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Remove _id for creation, keep for update if needed (though API signature might differ)
-        // For addApi we need Omit _id.
         const { _id, ...addressData } = formData;
         console.log("Submitting Address Data:", addressData);
 
@@ -108,8 +106,8 @@ const AddressPage = () => {
         }
     };
 
-    const handleEdit = (address: any) => { // Address type might need adjustment if _id is not in type
-        setEditingId(address._id);
+    const handleEdit = (address: Address) => {
+        setEditingId(address._id || '');
         setFormData({
             _id: address._id,
             label: address.label,
@@ -126,16 +124,21 @@ const AddressPage = () => {
 
     const handleDelete = (id: string) => {
         if (window.confirm('Are you sure you want to delete this address?')) {
+            if (addresses && selectedAddressIndex !== null) {
+                setSelectedAddressIndex(null);
+            }
             deleteAddressMutation.mutate(id);
         }
     };
 
     const handlePlaceOrder = () => {
         if (selectedAddressIndex === null || !addresses) return;
-        const selectedAddress = addresses[selectedAddressIndex];
         const cartItems = cart?.items || [];
+        if (cartItems.length === 0) {
+            return;
+        }
+        const selectedAddress = addresses?.find((address) => address._id === selectedAddressIndex);
 
-        // Calculate totals (replicated from CartPage logic, ideally should be shared or passed)
         const subtotal = cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
         const shipping = 0;
         const tax = subtotal * 0.1;
@@ -151,7 +154,7 @@ const AddressPage = () => {
             })),
             totalPrice: total,
             shippingAddress: selectedAddress,
-            paymentResult: { // Mock payment for now
+            paymentResult: {
                 id: `SIM-${Date.now()}`,
                 status: "paid",
                 update_time: new Date().toISOString(),
@@ -180,19 +183,19 @@ const AddressPage = () => {
                     {addresses?.map((address: any, index: number) => (
                         <div
                             key={address._id || index}
-                            className={`relative bg-white p-6 rounded-lg shadow-sm border-2 cursor-pointer transition-all ${selectedAddressIndex === index
+                            className={`relative bg-white p-6 rounded-lg shadow-sm border-2 cursor-pointer transition-all ${selectedAddressIndex === address._id
                                 ? 'border-(--color-primary) ring-1 ring-(--color-primary)'
                                 : 'border-transparent hover:border-gray-200'
                                 }`}
-                            onClick={() => setSelectedAddressIndex(index)}
+                            onClick={() => setSelectedAddressIndex(address._id)}
                         >
                             <div className="flex justify-between items-start">
                                 <div className="flex items-start gap-4">
-                                    <div className={`mt-1 w-5 h-5 rounded-full border flex items-center justify-center ${selectedAddressIndex === index
+                                    <div className={`mt-1 w-5 h-5 rounded-full border flex items-center justify-center ${selectedAddressIndex === address._id
                                         ? 'border-(--color-primary) bg-(--color-primary)'
                                         : 'border-gray-300'
                                         }`}>
-                                        {selectedAddressIndex === index && <CheckCircle className="w-3 h-3 text-white" />}
+                                        {selectedAddressIndex === address._id && <CheckCircle className="w-3 h-3 text-white" />}
                                     </div>
                                     <div>
                                         <div className="flex items-center gap-2 mb-1">

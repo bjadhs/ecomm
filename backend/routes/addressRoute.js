@@ -9,8 +9,8 @@ router.use(protect);
 //Address routes
 router.post('/', addAddress);
 router.get('/', getAddress);
-router.put('/:addressId', updateAddress);
-router.delete('/:addressId', deleteAddress);
+router.put('/:id', updateAddress);
+router.delete('/:id', deleteAddress);
 
 
 export default router;
