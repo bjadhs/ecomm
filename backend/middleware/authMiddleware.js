@@ -23,15 +23,17 @@ export const protect = [requireAuth(), async (req, res, next) => {
 ]
 
 
-// export const adminOnly = (req, res, next) => {
-//     const adminEmail = req.user.emailAddresses?.find(
-//         (email) => email.id === req.user.primaryEmailAddressId
-//     )?.emailAddress;
+export const adminOnly = (req, res, next) => {
+    const adminEmail = req.user.emailAddresses?.find(
+        (email) => email.id === req.user.primaryEmailAddressId
+    )?.emailAddress;
 
-//     if (adminEmail !== ENV.ADMIN_EMAIL) {
-//         return res.status(403).json({ message: "Forbidden not Admin" })
-//     }
-//     next()
-// }
+    const allowedEmails = ENV.ADMIN_EMAIL?.split(',').map(email => email.trim()) || [];
+
+    if (!adminEmail || !allowedEmails.includes(adminEmail)) {
+        return res.status(403).json({ message: "Forbidden: Admin access required" })
+    }
+    next()
+}
 
 

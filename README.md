@@ -41,8 +41,9 @@ Deployment: Sevalla (CICD GitHub → Prod)
 **21 Dec**: Signin redirect + Helmet/CORS → Deploy working  
 **20 Dec**: Navbar/Sidebar + full CRUD grids → GitHub push  
 ---
-2026
+## 2026
 **3 Jan **: After checkout to Address page add address, edit and delete
+
 **5 Jan **: Admin and frontend in one that only admin login can access admin dashboard
 ## Next & Tomorrow
 - Admin: Product Page - upload images, refetch on every mutation

@@ -14,6 +14,7 @@ import DashboardPage from './pages/admin/DashboardPage';
 import CustomerPage from './pages/admin/CustomerPage';
 import AdminOrderPage from './pages/admin/OrderPage';
 import ProductPage from './pages/admin/ProductPage';
+import ProtectedRoute from './components/ProtectedRoute';
 
 const App = () => {
   const { isSignedIn } = useAuth();
@@ -27,7 +28,11 @@ const App = () => {
 
       <Route
         path='/'
-        element={isSignedIn ? <DashboardLayout /> : <Navigate to='/login' />}
+        element={
+          <ProtectedRoute>
+            <DashboardLayout />
+          </ProtectedRoute>
+        }
       >
         <Route index element={<Navigate to='/home' replace />} />
         <Route path='home' element={<HomePage />} />
@@ -39,7 +44,11 @@ const App = () => {
       {/* Admin Routes */}
       <Route
         path='/admin'
-        element={isSignedIn ? <AdminLayout /> : <Navigate to='/login' />}
+        element={
+          <ProtectedRoute requireAdmin>
+            <AdminLayout />
+          </ProtectedRoute>
+        }
       >
         <Route index element={<Navigate to='/admin/dashboard' replace />} />
         <Route path='dashboard' element={<DashboardPage />} />

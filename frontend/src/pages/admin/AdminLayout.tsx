@@ -1,14 +1,13 @@
 import { useState } from 'react';
-import { Outlet, Navigate } from 'react-router';
+import { Outlet } from 'react-router';
 import { useUser } from '@clerk/clerk-react';
 import Sidebar from '../../components/admin/Sidebar';
 import Navbar from '../../components/Navbar';
-import { isAdmin } from '../../lib/auth';
 import PageLoader from '../../components/admin/PageLoader';
 
 const AdminLayout = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const { user, isLoaded } = useUser();
+    const { isLoaded } = useUser();
 
     const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
@@ -16,9 +15,6 @@ const AdminLayout = () => {
         return <PageLoader />;
     }
 
-    if (!isAdmin(user?.emailAddresses[0]?.emailAddress)) {
-        return <Navigate to="/home" replace />;
-    }
 
     return (
         <div className="flex min-h-screen bg-(--bg-main) font-sans text-(--text-main) transition-colors duration-300">
