@@ -1,15 +1,27 @@
 import { useState } from 'react';
-import { Outlet } from 'react-router';
-import Navbar from './components/Navbar';
-import Sidebar from './components/Sidebar';
+import { Outlet, Navigate } from 'react-router';
+import { useUser } from '@clerk/clerk-react';
+import Sidebar from '../../components/admin/Sidebar';
+import Navbar from '../../components/Navbar';
+import { isAdmin } from '../../lib/auth';
+import PageLoader from '../../components/admin/PageLoader';
 
-const DashboardLayout = () => {
+const AdminLayout = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const { user, isLoaded } = useUser();
 
     const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
+    if (!isLoaded) {
+        return <PageLoader />;
+    }
+
+    if (!isAdmin(user?.emailAddresses[0]?.emailAddress)) {
+        return <Navigate to="/home" replace />;
+    }
+
     return (
-        <div className="flex min-h-screen bg-[var(--bg-main)] font-sans text-[var(--text-main)] transition-colors duration-300">
+        <div className="flex min-h-screen bg-(--bg-main) font-sans text-(--text-main) transition-colors duration-300">
             {/* Sidebar overlay for mobile */}
             {isSidebarOpen && (
                 <div
@@ -20,7 +32,7 @@ const DashboardLayout = () => {
 
             {/* Sidebar */}
             <aside className={`
-                fixed inset-y-0 left-0 z-50 w-64 bg-[var(--bg-card)] border-r border-[var(--border-color)] transform transition-transform duration-200 ease-in-out lg:relative lg:translate-x-0
+                fixed inset-y-0 left-0 z-50 w-64 bg-(--bg-card) border-r border-(--border-color) transform transition-transform duration-200 ease-in-out lg:relative lg:translate-x-0
                 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
             `}>
                 <Sidebar closeSidebar={() => setIsSidebarOpen(false)} />
@@ -34,7 +46,7 @@ const DashboardLayout = () => {
                 </main>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default DashboardLayout;
+export default AdminLayout;

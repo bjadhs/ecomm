@@ -68,13 +68,7 @@ app.use('/api/inngest', serve({ client: inngest, functions }));
 
 // Error handling middleware
 app.use(errorHandler);
-
 if (ENV.NODE_ENV == 'production') {
-  app.use('/admin', express.static(path.join(__dirname, '../admin/dist')));
-  app.get('/admin/*', (_, res) => {
-    res.sendFile(path.join(__dirname, '../admin', '/dist', '/index.html'))
-  });
-
   app.use(express.static(path.join(__dirname, '../frontend/dist')));
   app.get('/*', (_, res) => {
     res.sendFile(path.join(__dirname, '../frontend', '/dist', '/index.html'))

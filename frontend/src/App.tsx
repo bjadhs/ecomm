@@ -8,6 +8,13 @@ import OrderPage from './pages/OrderPage';
 import DashboardLayout from './layout';
 import AddressPage from './pages/AddressPage';
 
+// Admin Pages
+import AdminLayout from './pages/admin/AdminLayout';
+import DashboardPage from './pages/admin/DashboardPage';
+import CustomerPage from './pages/admin/CustomerPage';
+import AdminOrderPage from './pages/admin/OrderPage';
+import ProductPage from './pages/admin/ProductPage';
+
 const App = () => {
   const { isSignedIn } = useAuth();
 
@@ -27,6 +34,18 @@ const App = () => {
         <Route path='cart' element={<CartPage />} />
         <Route path='orders' element={<OrderPage />} />
         <Route path='address' element={<AddressPage />} />
+      </Route>
+
+      {/* Admin Routes */}
+      <Route
+        path='/admin'
+        element={isSignedIn ? <AdminLayout /> : <Navigate to='/login' />}
+      >
+        <Route index element={<Navigate to='/admin/dashboard' replace />} />
+        <Route path='dashboard' element={<DashboardPage />} />
+        <Route path='customer' element={<CustomerPage />} />
+        <Route path='order' element={<AdminOrderPage />} />
+        <Route path='product' element={<ProductPage />} />
       </Route>
     </Routes>
   );

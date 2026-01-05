@@ -1,11 +1,17 @@
 import { useState, useCallback, useEffect } from 'react';
-import { LogOut, Moon, Sun, Settings, UserCircle, Home, ShoppingBag, ShoppingCart as ShoppingCartIcon } from 'lucide-react';
+import { LogOut, Moon, Sun, Settings, UserCircle, Home, ShoppingBag, ShoppingCart as ShoppingCartIcon, ShieldCheck } from 'lucide-react';
 import { SignOutButton, useUser } from '@clerk/clerk-react';
 import { useQuery } from '@tanstack/react-query';
 import { cartApi } from '../lib/api';
 import { Link, useLocation } from 'react-router';
+import { isAdmin } from '../lib/auth';
+import { Menu } from 'lucide-react';
 
-const Navbar = () => {
+interface NavbarProps {
+  onMenuClick?: () => void;
+}
+
+const Navbar = ({ onMenuClick }: NavbarProps) => {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(() => {
     const theme = localStorage.getItem('theme');
@@ -22,7 +28,7 @@ const Navbar = () => {
 
   const cartItemCount = cart?.items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) => location.pathname === path || location.pathname.startsWith(path + '/');
 
   const toggleTheme = useCallback(() => {
     setIsDarkMode((prev) => !prev);
@@ -38,15 +44,26 @@ const Navbar = () => {
     }
   }, [isDarkMode]);
 
+  const userIsAdmin = isAdmin(user?.emailAddresses[0]?.emailAddress);
+
   return (
     <header className='h-16 bg-(--bg-card) border-b border-(--border-color) flex items-center justify-between px-4 lg:px-8 transition-colors duration-300 sticky top-0 z-40 shadow-sm'>
       <div className='flex items-center gap-8'>
+        {onMenuClick && (
+          <button
+            onClick={onMenuClick}
+            className='lg:hidden p-2 -ml-2 text-(--text-muted) hover:text-(--text-main) rounded-lg hover:bg-(--bg-hover)'
+            aria-label='Open sidebar'
+          >
+            <Menu className='w-6 h-6' />
+          </button>
+        )}
         <h1 className='text-(--text-main) font-semibold text-lg hidden sm:block'>
           Welcome,{' '}
           <span className='font-bold text-(--color-primary)'>
             {user?.firstName
               ? user.firstName.charAt(0).toUpperCase() +
-                user.firstName.slice(1).toLowerCase()
+              user.firstName.slice(1).toLowerCase()
               : 'User'}
           </span>
         </h1>
@@ -55,11 +72,10 @@ const Navbar = () => {
         <nav className='flex items-center gap-1 md:gap-3'>
           <Link
             to='/home'
-            className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${
-              isActive('/home')
-                ? 'bg-(--bg-hover) text-(--text-main)'
-                : 'text-(--text-muted) hover:text-(--text-main) hover:bg-(--bg-hover)'
-            }`}
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${isActive('/home')
+              ? 'bg-(--bg-hover) text-(--text-main)'
+              : 'text-(--text-muted) hover:text-(--text-main) hover:bg-(--bg-hover)'
+              }`}
           >
             <Home className='w-5 h-5' />
             <span className='hidden md:inline text-sm font-medium'>Home</span>
@@ -67,11 +83,10 @@ const Navbar = () => {
 
           <Link
             to='/orders'
-            className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${
-              isActive('/orders')
-                ? 'bg-(--bg-hover) text-(--text-main)'
-                : 'text-(--text-muted) hover:text-(--text-main) hover:bg-(--bg-hover)'
-            }`}
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${isActive('/orders')
+              ? 'bg-(--bg-hover) text-(--text-main)'
+              : 'text-(--text-muted) hover:text-(--text-main) hover:bg-(--bg-hover)'
+              }`}
           >
             <ShoppingBag className='w-5 h-5' />
             <span className='hidden md:inline text-sm font-medium'>Orders</span>
@@ -79,11 +94,10 @@ const Navbar = () => {
 
           <Link
             to='/cart'
-            className={`relative flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${
-              isActive('/cart')
-                ? 'bg-(--bg-hover) text-(--text-main)'
-                : 'text-(--text-muted) hover:text-(--text-main) hover:bg-(--bg-hover)'
-            }`}
+            className={`relative flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${isActive('/cart')
+              ? 'bg-(--bg-hover) text-(--text-main)'
+              : 'text-(--text-muted) hover:text-(--text-main) hover:bg-(--bg-hover)'
+              }`}
           >
             <ShoppingCartIcon className='w-5 h-5' />
             <span className='hidden md:inline text-sm font-medium'>Cart</span>
@@ -93,6 +107,19 @@ const Navbar = () => {
               </span>
             )}
           </Link>
+
+          {userIsAdmin && (
+            <Link
+              to='/admin'
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${isActive('/admin')
+                ? 'bg-(--bg-hover) text-(--text-main)'
+                : 'text-(--text-muted) hover:text-(--text-main) hover:bg-(--bg-hover)'
+                }`}
+            >
+              <ShieldCheck className='w-5 h-5 text-(--color-primary)' />
+              <span className='hidden md:inline text-sm font-medium'>Admin</span>
+            </Link>
+          )}
         </nav>
       </div>
 
@@ -126,7 +153,7 @@ const Navbar = () => {
             <span className='text-sm font-medium hidden sm:inline text-(--text-main)'>
               {user?.firstName
                 ? user.firstName.charAt(0).toUpperCase() +
-                  user.firstName.slice(1).toLowerCase()
+                user.firstName.slice(1).toLowerCase()
                 : 'Profile'}
             </span>
           </button>
@@ -146,16 +173,14 @@ const Navbar = () => {
                     <div>
                       <p className='text-sm font-semibold text-(--text-main)'>
                         {user?.firstName && user?.lastName
-                          ? `${
-                              user.firstName?.[0]?.toUpperCase() +
-                              user.firstName?.slice(1).toLowerCase()
-                            } ${
-                              user.lastName?.[0]?.toUpperCase() +
-                              user.lastName?.slice(1).toLowerCase()
-                            }`
+                          ? `${user.firstName?.[0]?.toUpperCase() +
+                          user.firstName?.slice(1).toLowerCase()
+                          } ${user.lastName?.[0]?.toUpperCase() +
+                          user.lastName?.slice(1).toLowerCase()
+                          }`
                           : user?.firstName
                             ? user.firstName?.[0]?.toUpperCase() +
-                              user.firstName?.slice(1).toLowerCase()
+                            user.firstName?.slice(1).toLowerCase()
                             : 'User'}
                       </p>
                       <p className='text-xs text-(--text-muted) truncate'>
@@ -178,6 +203,18 @@ const Navbar = () => {
                     />
                     <span>My Profile</span>
                   </a>
+                  {userIsAdmin && (
+                    <Link
+                      to='/admin'
+                      className='flex items-center gap-3 px-4 py-2.5 text-sm text-(--text-main) hover:bg-(--bg-hover) transition-colors duration-150 group/item'
+                    >
+                      <ShieldCheck
+                        size={18}
+                        className='text-(--text-muted) group-hover/item:text-(--color-primary) transition-colors'
+                      />
+                      <span>Admin Panel</span>
+                    </Link>
+                  )}
                   <a
                     href='#'
                     className='flex items-center gap-3 px-4 py-2.5 text-sm text-(--text-main) hover:bg-(--bg-hover) transition-colors duration-150 group/item'
