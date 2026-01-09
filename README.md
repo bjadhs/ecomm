@@ -1,6 +1,6 @@
 # Live Ecom Admin Dashboard
 **Full-stack MERN app** | Deployed: https://ecomm-5xbtn.sevalla.app  
-**Proves job-ready skills**: Auth → Protected CRUD → React Query → Dark mode
+**Job-ready skills**: Auth → Protected CRUD → React Query → Dark mode
 
 ## Tech Stack
 
@@ -8,13 +8,14 @@ Frontend: React + Tailwind + TanStack Query + Clerk Auth
 Backend: Node/Express + MongoDB + Inngest + Cloudinary
 Deployment: Sevalla (CICD GitHub → Prod)
 
-## Live Features (Admin Dashboard)
+## Live Features
 ✅ **Dark/Light mode** toggle (persists localStorage)  
-✅ **Protected routes** (Clerk auth middleware)  
-✅ **Products grid** (React Query fetch + images)  
-✅ **Customers list** (full details populated)  
-✅ **Orders list** (customer names populated via Mongo populate)  
-✅ **Delete/Edit CRUD** (API mutations + auto-refetch)  
+✅ **Protected routes** (Clerk auth + Admin-only access)  
+✅ **Products CRUD** (Full admin management + image sync)  
+✅ **Customers list** (Full admin view of registered users)  
+✅ **Order Management** (Populated customer data + status updates)  
+✅ **Address Management** (User CRUD for shipping details)  
+✅ **Dynamic Search** (Storefront filtering with debounced logic)  
 
 ## Backend (Production Ready)
 
@@ -45,8 +46,24 @@ Deployment: Sevalla (CICD GitHub → Prod)
 **3 Jan **: After checkout to Address page add address, edit and delete
 
 **5 Jan **: Admin and frontend in one that only admin login can access admin dashboard
+
+**7 Jan **: After checkout to Address page add address, edit and delete
+
+**9 Jan **: Search functionality in home page, used useDebounce hook to prevent too many requests and filtered search query in client side. 
+
+
+
+
+
 ## Next & Tomorrow
-- Admin: Product Page - upload images, refetch on every mutation
+- View Single Product Page /product/:id
+- Admin Dashboard Analytics
+- Admin Stock management
+- CartPage Checkout Payment Stripe
+- Order Status Update
+- Review and rating
+- Wishlist
+
 
 
 # Image reference
