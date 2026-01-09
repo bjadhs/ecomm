@@ -1,9 +1,15 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { ShoppingCart, Star, Loader2 } from 'lucide-react';
+import { ShoppingCart, Star, Loader2, Search, X, SearchX } from 'lucide-react';
 import { productApi, cartApi } from '../lib/api';
 import type { Product } from '../types/index';
+import { useState, useMemo } from 'react';
+import { useDebounce } from '../hooks/debounceHook';
 
 const HomePage = () => {
+  const [query, setQuery] = useState<string>('');
+
+  const debounceQuery = useDebounce(query, 300);
+
   const queryClient = useQueryClient();
 
   const {
@@ -12,8 +18,19 @@ const HomePage = () => {
     error,
   } = useQuery({
     queryKey: ['products'],
-    queryFn: productApi.getAllProducts,
+    queryFn: () => productApi.getAllProducts(),
+    staleTime: 60 * 1000,
   });
+
+  const filteredProducts = useMemo(() => {
+    if (!debounceQuery) return products;
+    const lowerQuery = debounceQuery.toLowerCase();
+    return products?.filter((product: Product) =>
+      product.name.toLowerCase().includes(lowerQuery) ||
+      product.category.toLowerCase().includes(lowerQuery) ||
+      product.description.toLowerCase().includes(lowerQuery)
+    );
+  }, [debounceQuery, products]);
 
   const addToCartMutation = useMutation({
     mutationFn: ({ productId, quantity }: { productId: string; quantity: number }) =>
@@ -22,6 +39,10 @@ const HomePage = () => {
       queryClient.invalidateQueries({ queryKey: ['cart'] });
     },
   });
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
+  }
 
   if (isLoading) {
     return (
@@ -47,6 +68,28 @@ const HomePage = () => {
   return (
     <div className='min-h-screen p-6'>
       <div className='max-w-7xl mx-auto'>
+        {/* Search */}
+        <div className='mb-8 relative max-w-2xl mx-auto'>
+          <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
+            <Search className='h-5 w-5 text-(--text-muted)' />
+          </div>
+          <input
+            type='text'
+            placeholder='Search by name, category, or description...'
+            value={query}
+            onChange={handleSearch}
+            className='w-full pl-10 pr-10 p-3 bg-(--bg-card) border border-(--border-color) rounded-xl focus:outline-none focus:ring-2 focus:ring-(--color-primary) transition-all duration-200 shadow-sm'
+          />
+          {query && (
+            <button
+              onClick={() => setQuery('')}
+              className='absolute inset-y-0 right-0 pr-3 flex items-center text-(--text-muted) hover:text-(--text-main) transition-colors'
+            >
+              <X className='h-5 w-5' />
+            </button>
+          )}
+        </div>
+
         {/* Hero Section */}
         <div className='mb-8'>
           <h1 className='text-4xl font-bold text-(--text-main) mb-2'>
@@ -58,9 +101,9 @@ const HomePage = () => {
         </div>
 
         {/* Products Grid */}
-        {products && products.length > 0 ? (
+        {filteredProducts && filteredProducts.length > 0 ? (
           <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
-            {products.map((product: Product) => (
+            {filteredProducts.map((product: Product) => (
               <div
                 key={product._id}
                 className='bg-(--bg-card) border border-(--border-color) rounded-lg overflow-hidden hover:shadow-lg transition-all duration-200 hover:scale-105'
@@ -147,14 +190,34 @@ const HomePage = () => {
             ))}
           </div>
         ) : (
-          <div className='text-center py-12'>
-            <ShoppingCart className='w-16 h-16 text-(--text-muted) mx-auto mb-4' />
-            <h3 className='text-xl font-semibold text-(--text-main) mb-2'>
-              No products available
-            </h3>
-            <p className='text-(--text-muted)'>
-              Check back later for new products
-            </p>
+          <div className='text-center py-20 bg-(--bg-card) border border-(--border-color) rounded-3xl mt-8'>
+            {query ? (
+              <>
+                <SearchX className='w-16 h-16 text-(--text-muted) mx-auto mb-4 opacity-50' />
+                <h3 className='text-xl font-bold text-(--text-main) mb-2'>
+                  No results for "{query}"
+                </h3>
+                <p className='text-(--text-muted)'>
+                  Try adjusting your search terms or filters
+                </p>
+                <button
+                  onClick={() => setQuery('')}
+                  className="mt-6 text-(--color-primary) font-semibold hover:underline"
+                >
+                  Clear search
+                </button>
+              </>
+            ) : (
+              <>
+                <ShoppingCart className='w-16 h-16 text-(--text-muted) mx-auto mb-4 opacity-50' />
+                <h3 className='text-xl font-bold text-(--text-main) mb-2'>
+                  No products available
+                </h3>
+                <p className='text-(--text-muted)'>
+                  Check back later for new arrivals
+                </p>
+              </>
+            )}
           </div>
         )}
       </div>
