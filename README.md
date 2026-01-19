@@ -51,6 +51,7 @@ Deployment: Sevalla (CICD GitHub → Prod)
 
 **9 Jan **: Search functionality in home page, used useDebounce hook to prevent too many requests and filtered search query in client side. 
 
+**19 Jan **: CAPTCHA error fixed in production adding security policy
 
 
 

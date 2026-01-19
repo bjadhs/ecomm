@@ -31,7 +31,8 @@ app.use(helmet({
       scriptSrc: [
         "'self'",
         "https://thorough-gopher-10.clerk.accounts.dev",
-        "https://*.clerk.accounts.dev"
+        "https://*.clerk.accounts.dev",
+        "https://challenges.cloudflare.com"
       ],
       workerSrc: ["'self'", "blob:"],
       connectSrc: [
@@ -41,7 +42,11 @@ app.use(helmet({
       ],
       fontSrc: ["'self'", "https://ecomm-5xbtn.sevalla.app", "data:"],
       imgSrc: ["'self'", "data:", "https://images.unsplash.com", "https://img.clerk.com"],
-      styleSrc: ["'self'", "'unsafe-inline'"]
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      frameSrc: [
+        "'self'",
+        "https://challenges.cloudflare.com"
+      ]
     }
   }
 }));
