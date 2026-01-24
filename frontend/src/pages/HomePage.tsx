@@ -4,6 +4,7 @@ import { productApi, cartApi } from '../lib/api';
 import type { Product } from '../types/index';
 import { useState, useMemo } from 'react';
 import { useDebounce } from '../hooks/debounceHook';
+import { Link } from 'react-router';
 
 const HomePage = () => {
   const [query, setQuery] = useState<string>('');
@@ -104,9 +105,10 @@ const HomePage = () => {
         {filteredProducts && filteredProducts.length > 0 ? (
           <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
             {filteredProducts.map((product: Product) => (
-              <div
+              <Link
                 key={product._id}
-                className='bg-(--bg-card) border border-(--border-color) rounded-lg overflow-hidden hover:shadow-lg transition-all duration-200 hover:scale-105'
+                to={`/product/${product._id}`}
+                className='bg-(--bg-card) border border-(--border-color) rounded-lg overflow-hidden hover:shadow-lg transition-all duration-200 hover:scale-105 block'
               >
                 {/* Product Image */}
                 <div className='relative w-full h-48 bg-(--bg-hover)'>
@@ -171,7 +173,9 @@ const HomePage = () => {
                     </div>
                   </div>
 
-                  {/* Add to Cart Button */}
+                </div>
+                {/* Add to Cart Button */}
+                <div onClick={(e) => e.preventDefault()}>
                   <button
                     onClick={() =>
                       addToCartMutation.mutate({
@@ -186,7 +190,7 @@ const HomePage = () => {
                     {addToCartMutation.isPending ? 'Adding...' : 'Add to Cart'}
                   </button>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         ) : (
@@ -219,9 +223,10 @@ const HomePage = () => {
               </>
             )}
           </div>
-        )}
-      </div>
-    </div>
+        )
+        }
+      </div >
+    </div >
   );
 };
 

@@ -8,6 +8,10 @@ export const productApi = {
         const { data } = await axiosInstance.get<Product[]>('/products');
         return data;
     },
+    getProductById: async (id: string): Promise<Product> => {
+        const { data } = await axiosInstance.get<Product>(`/products/${id}`);
+        return data;
+    },
 
 }
 
