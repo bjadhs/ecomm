@@ -1,6 +1,6 @@
 import { useAuth } from '@clerk/clerk-react';
 import { Navigate, Routes, Route } from 'react-router';
-import LoginPage from './pages/LoginPage';
+import AuthPage from './pages/AuthPage';
 import HomePage from './pages/HomePage';
 import CartPage from './pages/CartPage';
 import OrderPage from './pages/OrderPage';
@@ -24,7 +24,7 @@ const App = () => {
     <Routes>
       <Route
         path='/login'
-        element={isSignedIn ? <Navigate to='/home' /> : <LoginPage />}
+        element={isSignedIn ? <Navigate to='/home' /> : <AuthPage />}
       />
 
       <Route

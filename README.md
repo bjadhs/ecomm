@@ -53,8 +53,7 @@ Deployment: Sevalla (CICD GitHub → Prod)
 
 **19 Jan **: CAPTCHA error fixed in production adding security policy
 
-
-
+**24 Jan **: Single Product Page
 
 ## Next & Tomorrow
 - View Single Product Page /product/:id
