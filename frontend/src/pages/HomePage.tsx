@@ -8,6 +8,7 @@ import { Link } from 'react-router';
 
 const HomePage = () => {
   const [query, setQuery] = useState<string>('');
+  const [pendingProductId, setPendingProductId] = useState<string | null>(null);
 
   const debounceQuery = useDebounce(query, 300);
 
@@ -15,7 +16,7 @@ const HomePage = () => {
 
   const {
     data: products,
-    isLoading,
+    isPending,
     error,
   } = useQuery({
     queryKey: ['products'],
@@ -37,7 +38,10 @@ const HomePage = () => {
     mutationFn: ({ productId, quantity }: { productId: string; quantity: number }) =>
       cartApi.addToCart(productId, quantity),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['cart'] });
+      return queryClient.invalidateQueries({ queryKey: ['cart'] });
+    },
+    onSettled: () => {
+      setPendingProductId(null);
     },
   });
 
@@ -45,7 +49,7 @@ const HomePage = () => {
     setQuery(e.target.value);
   }
 
-  if (isLoading) {
+  if (isPending) {
     return (
       <div className='min-h-screen flex items-center justify-center'>
         <Loader2 className='w-12 h-12 animate-spin text-(--color-primary)' />
@@ -105,92 +109,96 @@ const HomePage = () => {
         {filteredProducts && filteredProducts.length > 0 ? (
           <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
             {filteredProducts.map((product: Product) => (
-              <Link
+              <div
                 key={product._id}
-                to={`/product/${product._id}`}
-                className='bg-(--bg-card) border border-(--border-color) rounded-lg overflow-hidden hover:shadow-lg transition-all duration-200 hover:scale-105 block'
+                className='bg-(--bg-card) border border-(--border-color) rounded-lg overflow-hidden hover:shadow-lg transition-all duration-200 flex flex-col'
               >
-                {/* Product Image */}
-                <div className='relative w-full h-48 bg-(--bg-hover)'>
-                  {product.images && product.images.length > 0 ? (
-                    <img
-                      src={product.images[0]}
-                      alt={product.name}
-                      className='w-full h-full object-cover'
-                    />
-                  ) : (
-                    <div className='w-full h-full flex items-center justify-center'>
-                      <ShoppingCart className='w-16 h-16 text-(--text-muted)' />
-                    </div>
-                  )}
-                  {product.stock === 0 && (
-                    <div className='absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded text-xs font-semibold'>
-                      Out of Stock
-                    </div>
-                  )}
-                </div>
-
-                {/* Product Info */}
-                <div className='p-4'>
-                  <div className='mb-2'>
-                    <span className='text-xs text-(--text-muted) uppercase'>
-                      {product.category}
-                    </span>
-                  </div>
-                  <h3 className='text-lg font-semibold text-(--text-main) mb-2 line-clamp-2'>
-                    {product.name}
-                  </h3>
-                  <p className='text-sm text-(--text-muted) mb-3 line-clamp-2'>
-                    {product.description}
-                  </p>
-
-                  {/* Rating */}
-                  {product.averageRating > 0 && (
-                    <div className='flex items-center gap-1 mb-3'>
-                      <Star className='w-4 h-4 fill-yellow-400 text-yellow-400' />
-                      <span className='text-sm font-medium text-(--text-main)'>
-                        {product.averageRating.toFixed(1)}
-                      </span>
-                      <span className='text-xs text-(--text-muted)'>
-                        ({product.totalReviews} reviews)
-                      </span>
-                    </div>
-                  )}
-
-                  {/* Price and Stock */}
-                  <div className='flex items-center justify-between mb-3'>
-                    <div>
-                      <span className='text-2xl font-bold text-(--color-primary)'>
-                        ${product.price.toFixed(2)}
-                      </span>
-                    </div>
-                    <div className='text-xs text-(--text-muted)'>
-                      {product.stock > 0 ? (
-                        <span>{product.stock} in stock</span>
-                      ) : (
-                        <span className='text-red-500'>Out of stock</span>
-                      )}
-                    </div>
+                {/* Clickable Product Link */}
+                <Link
+                  to={`/product/${product._id}`}
+                  className='flex-1 flex flex-col hover:opacity-90 transition-opacity'
+                >
+                  {/* Product Image */}
+                  <div className='relative w-full h-48 bg-(--bg-hover)'>
+                    {product.images && product.images.length > 0 ? (
+                      <img
+                        src={product.images[0]}
+                        alt={product.name}
+                        className='w-full h-full object-cover'
+                      />
+                    ) : (
+                      <div className='w-full h-full flex items-center justify-center'>
+                        <ShoppingCart className='w-16 h-16 text-(--text-muted)' />
+                      </div>
+                    )}
+                    {product.stock === 0 && (
+                      <div className='absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded text-xs font-semibold'>
+                        Out of Stock
+                      </div>
+                    )}
                   </div>
 
-                </div>
+                  {/* Product Info */}
+                  <div className='p-4'>
+                    <div className='mb-2'>
+                      <span className='text-xs text-(--text-muted) uppercase'>
+                        {product.category}
+                      </span>
+                    </div>
+                    <h3 className='text-lg font-semibold text-(--text-main) mb-2 line-clamp-2'>
+                      {product.name}
+                    </h3>
+                    <p className='text-sm text-(--text-muted) mb-3 line-clamp-2'>
+                      {product.description}
+                    </p>
+
+                    {/* Rating */}
+                    {product.averageRating > 0 && (
+                      <div className='flex items-center gap-1 mb-3'>
+                        <Star className='w-4 h-4 fill-yellow-400 text-yellow-400' />
+                        <span className='text-sm font-medium text-(--text-main)'>
+                          {product.averageRating.toFixed(1)}
+                        </span>
+                        <span className='text-xs text-(--text-muted)'>
+                          ({product.totalReviews} reviews)
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Price and Stock */}
+                    <div className='flex items-center justify-between'>
+                      <div>
+                        <span className='text-2xl font-bold text-(--color-primary)'>
+                          ${product.price.toFixed(2)}
+                        </span>
+                      </div>
+                      <div className='text-xs text-(--text-muted)'>
+                        {product.stock > 0 ? (
+                          <span>{product.stock} in stock</span>
+                        ) : (
+                          <span className='text-red-500'>Out of stock</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+
                 {/* Add to Cart Button */}
-                <div onClick={(e) => e.preventDefault()}>
-                  <button
-                    onClick={() =>
-                      addToCartMutation.mutate({
-                        productId: product._id,
-                        quantity: 1,
-                      })
-                    }
-                    disabled={product.stock === 0 || addToCartMutation.isPending}
-                    className='w-full bg-(--color-primary) text-white py-2 px-4 rounded-lg font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2'
-                  >
-                    <ShoppingCart className='w-4 h-4' />
-                    {addToCartMutation.isPending ? 'Adding...' : 'Add to Cart'}
-                  </button>
-                </div>
-              </Link>
+                <button
+                  onClick={() => {
+                    setPendingProductId(product._id);
+                    addToCartMutation.mutate({
+                      productId: product._id,
+                      quantity: 1,
+                    });
+                  }}
+                  disabled={product.stock === 0 || pendingProductId === product._id}
+                  className='w-full bg-(--color-primary) text-white py-2 px-4 font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2'
+                >
+                  <ShoppingCart className='w-4 h-4' />
+                  {pendingProductId === product._id ? 'Adding...' : 'Add to Cart'}
+                </button>
+              </div>
             ))}
           </div>
         ) : (

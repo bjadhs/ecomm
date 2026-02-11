@@ -1,11 +1,14 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Loader2, Trash2, Plus, Minus, ShoppingCart } from 'lucide-react';
 import { useNavigate } from 'react-router';
+import { useState } from 'react';
 import { cartApi } from '../lib/api';
 
 const CartPage = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const [pendingUpdateId, setPendingUpdateId] = useState<string | null>(null);
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
 
   const { data: cart, isLoading, error } = useQuery({
     queryKey: ['cart'],
@@ -17,6 +20,10 @@ const CartPage = () => {
       cartApi.updateCartItem(productId, quantity),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cart'] });
+      setPendingUpdateId(null);
+    },
+    onError: () => {
+      setPendingUpdateId(null);
     },
   });
 
@@ -24,6 +31,10 @@ const CartPage = () => {
     mutationFn: (productId: string) => cartApi.deleteCartItem(productId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cart'] });
+      setPendingDeleteId(null);
+    },
+    onError: () => {
+      setPendingDeleteId(null);
     },
   });
 
@@ -108,13 +119,14 @@ const CartPage = () => {
                       <button
                         onClick={() => {
                           if (item.quantity > 1) {
+                            setPendingUpdateId(item.product._id);
                             updateMutation.mutate({
                               productId: item.product._id,
                               quantity: item.quantity - 1,
                             });
                           }
                         }}
-                        disabled={item.quantity <= 1 || updateMutation.isPending}
+                        disabled={item.quantity <= 1 || pendingUpdateId === item.product._id}
                         className='p-2 text-(--text-muted) hover:text-(--text-main) rounded-full hover:bg-(--bg-hover) transition-all disabled:opacity-50 disabled:cursor-not-allowed'
                       >
                         <Minus className='w-4 h-4' />
@@ -125,6 +137,7 @@ const CartPage = () => {
                       <button
                         onClick={() => {
                           if (item.quantity < item.product.stock) {
+                            setPendingUpdateId(item.product._id);
                             updateMutation.mutate({
                               productId: item.product._id,
                               quantity: item.quantity + 1,
@@ -133,7 +146,7 @@ const CartPage = () => {
                         }}
                         disabled={
                           item.quantity >= item.product.stock ||
-                          updateMutation.isPending
+                          pendingUpdateId === item.product._id
                         }
                         className='p-2 text-(--text-muted) hover:text-(--text-main) rounded-full hover:bg-(--bg-hover) transition-all disabled:opacity-50 disabled:cursor-not-allowed'
                       >
@@ -156,8 +169,11 @@ const CartPage = () => {
                       </p>
                     </div>
                     <button
-                      onClick={() => removeMutation.mutate(item.product._id)}
-                      disabled={removeMutation.isPending}
+                      onClick={() => {
+                        setPendingDeleteId(item.product._id);
+                        removeMutation.mutate(item.product._id);
+                      }}
+                      disabled={pendingDeleteId === item.product._id}
                       className='p-2 text-red-500 hover:bg-red-500/10 rounded-full transition-all disabled:opacity-50 disabled:cursor-not-allowed'
                     >
                       <Trash2 className='w-5 h-5' />
