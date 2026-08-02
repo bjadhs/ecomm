@@ -6,6 +6,7 @@ import { cartApi } from '../lib/api';
 import { Link, useLocation } from 'react-router';
 import { isAdmin } from '../lib/auth';
 import { Menu } from 'lucide-react';
+import SettingsModal from './SettingsModal';
 
 interface NavbarProps {
   onMenuClick?: () => void;
@@ -13,6 +14,7 @@ interface NavbarProps {
 
 const Navbar = ({ onMenuClick }: NavbarProps) => {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(() => {
     const theme = localStorage.getItem('theme');
     return theme
@@ -44,7 +46,7 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
     }
   }, [isDarkMode]);
 
-  const userIsAdmin = isAdmin(user?.emailAddresses[0]?.emailAddress);
+  const userIsAdmin = isAdmin(user);
 
   return (
     <header className='h-16 bg-(--bg-card) border-b border-(--border-color) flex items-center justify-between px-4 lg:px-8 transition-colors duration-300 sticky top-0 z-40 shadow-sm'>
@@ -215,16 +217,22 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
                       <span>Admin Panel</span>
                     </Link>
                   )}
-                  <a
-                    href='#'
-                    className='flex items-center gap-3 px-4 py-2.5 text-sm text-(--text-main) hover:bg-(--bg-hover) transition-colors duration-150 group/item'
+                  <button
+                    onClick={() => {
+                      setShowSettings(true);
+                      setShowProfileMenu(false);
+                    }}
+                    className='flex w-full items-center gap-3 px-4 py-2.5 text-sm text-(--text-main) hover:bg-(--bg-hover) transition-colors duration-150 group/item'
                   >
                     <Settings
                       size={18}
                       className='text-(--text-muted) group-hover/item:text-(--color-primary) transition-colors'
                     />
                     <span>Settings</span>
-                  </a>
+                    <span className='ml-auto text-xs text-(--text-muted)'>
+                      {userIsAdmin ? 'Admin' : 'User'}
+                    </span>
+                  </button>
                 </div>
 
                 {/* Divider */}
@@ -247,6 +255,8 @@ const Navbar = ({ onMenuClick }: NavbarProps) => {
           )}
         </div>
       </div>
+
+      {showSettings && <SettingsModal onClose={() => setShowSettings(false)} />}
     </header>
   );
 };

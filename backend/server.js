@@ -11,6 +11,7 @@ import adminRoute from './routes/adminRoute.js';
 import orderRoute from './routes/orderRoute.js';
 import productRoute from './routes/productRoute.js';
 import addressRoute from './routes/addressRoute.js';
+import userRoute from './routes/userRoute.js';
 
 // Middleware
 import { errorHandler } from './middleware/errorMiddleware.js';
@@ -64,6 +65,7 @@ app.use('/api/address', addressRoute);
 app.use('/api/admin', adminRoute);
 app.use('/api/orders', orderRoute);
 app.use('/api/products', productRoute);
+app.use('/api/user', userRoute);
 
 // Health check route
 app.get('/api/health', (req, res) => {

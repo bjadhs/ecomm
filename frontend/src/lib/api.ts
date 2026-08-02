@@ -1,5 +1,25 @@
 import { axiosInstance } from "./axios.ts";
 import type { Product, Cart, Order, Address } from "../types/index.ts";
+import type { AppRole } from "./auth.ts";
+
+export interface MeResponse {
+    id: string;
+    email: string | null;
+    role: AppRole;
+    /** permanent admin via the env allowlist */
+    locked: boolean;
+}
+
+export const userApi = {
+    getMe: async (): Promise<MeResponse> => {
+        const { data } = await axiosInstance.get<MeResponse>('/user/me');
+        return data;
+    },
+    setRole: async (role: AppRole): Promise<MeResponse> => {
+        const { data } = await axiosInstance.patch<MeResponse>('/user/role', { role });
+        return data;
+    },
+};
 
 
 

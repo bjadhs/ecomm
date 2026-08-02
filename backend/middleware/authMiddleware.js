@@ -23,14 +23,24 @@ export const protect = [requireAuth(), async (req, res, next) => {
 ]
 
 
+export const getPrimaryEmail = (user) =>
+    user?.emailAddresses?.find((email) => email.id === user.primaryEmailAddressId)?.emailAddress
+    || user?.emailAddresses?.[0]?.emailAddress
+    || null;
+
+export const isAllowlistedAdmin = (email) => {
+    if (!email) return false;
+    const allowedEmails = ENV.ADMIN_EMAIL?.split(',').map((e) => e.trim().toLowerCase()).filter(Boolean) || [];
+    return allowedEmails.includes(email.toLowerCase());
+};
+
+export const resolveRole = (user) =>
+    isAllowlistedAdmin(getPrimaryEmail(user)) || user?.publicMetadata?.role === 'admin'
+        ? 'admin'
+        : 'user';
+
 export const adminOnly = (req, res, next) => {
-    const adminEmail = req.user.emailAddresses?.find(
-        (email) => email.id === req.user.primaryEmailAddressId
-    )?.emailAddress;
-
-    const allowedEmails = ENV.ADMIN_EMAIL?.split(',').map(email => email.trim()) || [];
-
-    if (!adminEmail || !allowedEmails.includes(adminEmail)) {
+    if (resolveRole(req.user) !== 'admin') {
         return res.status(403).json({ message: "Forbidden: Admin access required" })
     }
     next()

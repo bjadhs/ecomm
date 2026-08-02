@@ -20,11 +20,8 @@ const ProtectedRoute = ({ children, requireAdmin = false }: ProtectedRouteProps)
         return <Navigate to="/login" state={{ from: location }} replace />;
     }
 
-    if (requireAdmin) {
-        const userEmail = user?.emailAddresses[0]?.emailAddress;
-        if (!isAdmin(userEmail)) {
-            return <Navigate to="/home" replace />;
-        }
+    if (requireAdmin && !isAdmin(user)) {
+        return <Navigate to="/home" replace />;
     }
 
     return <>{children}</>;
