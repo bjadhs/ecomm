@@ -1,0 +1,44 @@
+name: Deploy
+
+# Push to main -> the self-hosted runner ON the server pulls the new code and
+# rebuilds the Docker stack in place. Also runnable manually from the Actions tab.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Never run two deploys at once; let an in-flight one finish before the next.
+concurrency:
+  group: deploy-main
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    # Targets the self-hosted runner installed on the server (label set during
+    # `./config.sh --labels ecom`).
+    runs-on: [self-hosted, ecom]
+
+    # The persistent deploy clone on the server. It holds the gitignored `.env`
+    # (Atlas URI, Clerk + Cloudinary keys, APP_HOST) that docker compose needs.
+    env:
+      DEPLOY_DIR: /opt/ecom
+
+    steps:
+      - name: Pull latest main
+        run: |
+          cd "$DEPLOY_DIR"
+          git fetch --prune origin
+          git reset --hard origin/main
+
+      - name: Rebuild and restart the stack
+        run: |
+          cd "$DEPLOY_DIR"
+          docker compose up -d --build
+
+      - name: Prune dangling images
+        run: docker image prune -f
+
+      - name: Show status
+        run: |
+          cd "$DEPLOY_DIR"
+          docker compose ps

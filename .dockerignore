@@ -1,0 +1,16 @@
+node_modules
+**/node_modules
+frontend/dist
+.git
+.gitignore
+.github
+.DS_Store
+**/.DS_Store
+npm-debug.log*
+.env*
+!.env.docker.example
+*.local
+mobile
+README.md
+CLAUDE.md
+WrongWayRight.md

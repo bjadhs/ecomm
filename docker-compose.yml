@@ -1,0 +1,56 @@
+# Self-hosting the ecom app. Credentials live in a local `.env` (gitignored) —
+# copy `.env.docker.example` to `.env` on the server and fill it in.
+# Then: `docker compose up -d --build`.
+#
+# No database service here: MongoDB stays on Atlas. Whitelist the VPS's public
+# IP under Atlas -> Network Access or every request will fail to connect.
+services:
+  app:
+    build:
+      context: .
+      args:
+        # Build-time only — inlined into the JS bundle. Changing these requires
+        # a rebuild (`--build`), not just a restart.
+        VITE_CLERK_PUBLISHABLE_KEY: ${VITE_CLERK_PUBLISHABLE_KEY}
+        VITE_API_URL: ${VITE_API_URL:-/api}
+        VITE_ADMIN_EMAILS: ${VITE_ADMIN_EMAILS}
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      MONGODB_URI: ${MONGODB_URI}
+      CLERK_PUBLISHABLE_KEY: ${CLERK_PUBLISHABLE_KEY}
+      CLERK_SECRET_KEY: ${CLERK_SECRET_KEY}
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
+      CLOUDINARY_SECRET_KEY: ${CLOUDINARY_SECRET_KEY}
+      INNGEST_SIGNING_KEY: ${INNGEST_SIGNING_KEY}
+      # Must match the public origin, and must stay in sync with VITE_ADMIN_EMAILS.
+      CLIENT_URL: https://${APP_HOST}
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
+    # ports:
+    #   # Optional Tailscale-only binding, matching the hiday-todo pattern.
+    #   - "100.78.187.64:8086:3000"
+    networks:
+      - default
+      - dokploy-network  # reachable by the host's Traefik for public HTTPS
+    labels:
+      # --- Public HTTPS via the host's existing Traefik -----------------------
+      - "traefik.enable=true"
+      - "traefik.docker.network=dokploy-network"
+      - "traefik.http.services.ecom.loadbalancer.server.port=3000"
+      # HTTPS router (Let's Encrypt via the shared `letsencrypt` resolver)
+      - "traefik.http.routers.ecom.rule=Host(`${APP_HOST}`)"
+      - "traefik.http.routers.ecom.entrypoints=websecure"
+      - "traefik.http.routers.ecom.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.ecom.service=ecom"
+      # HTTP router -> redirect to HTTPS
+      - "traefik.http.routers.ecom-web.rule=Host(`${APP_HOST}`)"
+      - "traefik.http.routers.ecom-web.entrypoints=web"
+      - "traefik.http.routers.ecom-web.middlewares=ecom-redirect"
+      - "traefik.http.middlewares.ecom-redirect.redirectscheme.scheme=https"
+
+networks:
+  # Created/managed by Dokploy's Traefik; we attach the app to it for routing.
+  dokploy-network:
+    external: true

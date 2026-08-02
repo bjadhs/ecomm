@@ -2,6 +2,7 @@ node_modules
 .env
 .env.local
 .DS_Store
+frontend/dist
 
 # Local agent notes — not part of the project
 CLAUDE.md

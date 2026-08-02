@@ -40,7 +40,9 @@ app.use(helmet({
         "https://*.clerk.accounts.dev",
         "wss://*.clerk.accounts.dev"
       ],
-      fontSrc: ["'self'", "https://ecomm-5xbtn.sevalla.app", "data:"],
+      // 'self' covers whichever origin is serving the app, so the public
+      // hostname no longer needs to be hardcoded here.
+      fontSrc: ["'self'", "data:"],
       imgSrc: ["'self'", "data:", "https://images.unsplash.com", "https://img.clerk.com"],
       styleSrc: ["'self'", "'unsafe-inline'"],
       frameSrc: [
